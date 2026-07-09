@@ -1,0 +1,1379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledger — AFM 274 Corporate Finance Studio</title>
+<style>
+  :root{
+    --ink:#0F2036;
+    --ink-2:#16304F;
+    --paper:#FFFFFF;
+    --paper-2:#F3F5F8;
+    --line:#DDE2E9;
+    --text:#1B2430;
+    --text-dim:#5B6472;
+    --gain:#1E7A5F;
+    --gain-bg:#E7F3EE;
+    --loss:#B3432E;
+    --loss-bg:#FBEAE6;
+    --gold:#B8862E;
+    --gold-bg:#FBF2E1;
+    --serif:'Iowan Old Style','Palatino Linotype','Book Antiqua',Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --mono:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper-2);
+    color:var(--text);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{display:flex;min-height:100vh;}
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:252px;
+    flex:0 0 252px;
+    background:var(--ink);
+    color:#EAF0F7;
+    padding:22px 16px 24px;
+    position:sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+  }
+  .brand{
+    padding:2px 6px 18px;
+    border-bottom:1px solid rgba(255,255,255,0.12);
+    margin-bottom:16px;
+  }
+  .brand .mark{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.16em;
+    color:#9FC7B6;
+    text-transform:uppercase;
+  }
+  .brand h1{
+    font-family:var(--serif);
+    font-size:22px;
+    font-weight:600;
+    margin:4px 0 2px;
+    line-height:1.15;
+  }
+  .brand p{
+    font-size:11.5px;
+    color:#9FB0C4;
+    margin:0;
+  }
+  .nav-group-label{
+    font-size:10.5px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:#7C93AC;
+    margin:18px 8px 8px;
+  }
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 10px;
+    border-radius:8px;
+    cursor:pointer;
+    color:#D8E2EE;
+    font-size:13.5px;
+    margin-bottom:2px;
+    transition:background .12s ease;
+  }
+  .nav-item .chip{
+    font-family:var(--mono);
+    font-size:11px;
+    width:26px;
+    height:26px;
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,0.08);
+    color:#BFD3E5;
+    flex:0 0 auto;
+  }
+  .nav-item:hover{background:rgba(255,255,255,0.07);}
+  .nav-item.active{background:#1F6F54;color:#fff;}
+  .nav-item.active .chip{background:rgba(255,255,255,0.22);color:#fff;}
+  .nav-item .lbl{flex:1;}
+  .nav-item .lbl small{display:block;color:#8FA3B8;font-size:10.5px;margin-top:1px;}
+  .nav-item.active .lbl small{color:#CFE9DE;}
+
+  .side-foot{
+    margin-top:22px;
+    padding:12px 10px;
+    border-top:1px solid rgba(255,255,255,0.12);
+    font-size:11.5px;
+    color:#8098B0;
+    line-height:1.5;
+  }
+
+  /* ---------- Main ---------- */
+  .main{flex:1;min-width:0;padding:36px 44px 80px;max-width:980px;}
+  .crumbs{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--text-dim);text-transform:uppercase;margin-bottom:8px;}
+  .page-head h2{font-family:var(--serif);font-size:32px;margin:0 0 6px;line-height:1.15;}
+  .page-head p.dek{color:var(--text-dim);font-size:15px;max-width:640px;margin:0 0 24px;line-height:1.5;}
+
+  .tabbar{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:26px;}
+  .tabbtn{
+    font-family:var(--sans);
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--text-dim);
+    background:none;
+    border:none;
+    padding:10px 4px;
+    margin-right:20px;
+    cursor:pointer;
+    border-bottom:2px solid transparent;
+  }
+  .tabbtn.active{color:var(--ink);border-bottom-color:var(--gold);}
+
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:20px 22px;
+    margin-bottom:16px;
+  }
+  .concept-card h3{
+    font-family:var(--serif);
+    font-size:17px;
+    margin:0 0 8px;
+    color:var(--ink-2);
+  }
+  .concept-card p{font-size:14px;line-height:1.65;margin:0;color:var(--text);}
+  .concept-card p + p{margin-top:8px;}
+
+  .formula-row{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    padding:12px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .formula-row:last-child{border-bottom:none;}
+  .formula-row .fname{font-size:13.5px;color:var(--text-dim);max-width:270px;}
+  .formula-row .fexpr{
+    font-family:var(--mono);
+    font-size:14.5px;
+    color:var(--ink-2);
+    text-align:right;
+    white-space:nowrap;
+  }
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;}
+  .ptype{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 16px 14px;
+    cursor:pointer;
+    transition:border-color .12s ease, transform .12s ease;
+  }
+  .ptype:hover{border-color:var(--gold);transform:translateY(-1px);}
+  .ptype .num{
+    font-family:var(--mono);
+    font-size:10.5px;
+    color:#98A5B4;
+    letter-spacing:.08em;
+  }
+  .ptype h4{font-family:var(--serif);font-size:15.5px;margin:6px 0 6px;color:var(--ink-2);}
+  .ptype p{font-size:12.5px;color:var(--text-dim);margin:0;line-height:1.5;}
+
+  .problem-panel{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:24px 26px;}
+  .problem-panel .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+  .problem-panel .prompt{font-size:15.5px;line-height:1.7;color:var(--text);margin-bottom:18px;}
+  .prompt b{color:var(--ink);}
+  .answer-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+  .answer-row input[type=text], .answer-row input[type=number]{
+    font-family:var(--mono);
+    font-size:15px;
+    padding:9px 12px;
+    border:1.5px solid var(--line);
+    border-radius:7px;
+    width:180px;
+    background:var(--paper-2);
+  }
+  .answer-row input:focus{outline:none;border-color:var(--ink-2);}
+  .unit{font-size:13px;color:var(--text-dim);}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+  button.btn{
+    font-family:var(--sans);
+    font-size:13px;
+    font-weight:600;
+    padding:9px 15px;
+    border-radius:7px;
+    border:1px solid var(--line);
+    background:var(--paper);
+    cursor:pointer;
+    color:var(--ink);
+  }
+  button.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink);}
+  button.btn.primary:hover{background:var(--ink-2);}
+  button.btn:hover{border-color:#B7C0CC;}
+  button.btn.ghost{background:transparent;}
+
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:8px;font-size:14px;display:none;}
+  .feedback.correct{background:var(--gain-bg);color:var(--gain);display:block;}
+  .feedback.wrong{background:var(--loss-bg);color:var(--loss);display:block;}
+
+  .solution{margin-top:16px;border-top:1px solid var(--line);padding-top:14px;display:none;}
+  .solution.open{display:block;}
+  .solution ol{margin:0;padding-left:20px;}
+  .solution li{font-size:14px;line-height:1.7;margin-bottom:8px;color:var(--text);}
+  .solution li .work{font-family:var(--mono);color:var(--ink-2);}
+  .solution .final{
+    margin-top:10px;
+    font-family:var(--mono);
+    font-size:14.5px;
+    background:var(--gold-bg);
+    color:#7A5A16;
+    padding:10px 12px;
+    border-radius:7px;
+  }
+
+  .back-link{font-size:13px;color:var(--text-dim);cursor:pointer;margin-bottom:14px;display:inline-flex;align-items:center;gap:6px;}
+  .back-link:hover{color:var(--ink);}
+
+  /* Quiz */
+  .quiz-progress{font-family:var(--mono);font-size:12px;color:var(--text-dim);margin-bottom:10px;}
+  .quiz-q{font-size:16px;font-family:var(--serif);color:var(--ink);margin-bottom:16px;line-height:1.5;}
+  .choice{
+    display:block;width:100%;text-align:left;
+    background:var(--paper);border:1.5px solid var(--line);border-radius:8px;
+    padding:12px 14px;margin-bottom:9px;cursor:pointer;font-size:14px;color:var(--text);
+    font-family:var(--sans);
+  }
+  .choice:hover{border-color:var(--ink-2);}
+  .choice.correct{background:var(--gain-bg);border-color:var(--gain);color:#125140;}
+  .choice.wrong{background:var(--loss-bg);border-color:var(--loss);color:#7c2c1c;}
+  .choice[disabled]{cursor:default;}
+  .quiz-explain{font-size:13.5px;color:var(--text-dim);background:var(--paper-2);padding:12px 14px;border-radius:8px;margin-top:10px;line-height:1.6;display:none;}
+  .quiz-explain.open{display:block;}
+  .quiz-score{
+    font-family:var(--mono);font-size:13px;color:var(--ink-2);
+    background:var(--paper-2);padding:8px 12px;border-radius:7px;display:inline-block;margin-bottom:16px;
+  }
+
+  .home-hero{
+    background:linear-gradient(135deg,#0F2036 0%,#1A3A5C 100%);
+    color:#fff;border-radius:14px;padding:38px 40px;margin-bottom:26px;
+  }
+  .home-hero .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:#8FC9AC;text-transform:uppercase;margin-bottom:10px;}
+  .home-hero h2{font-family:var(--serif);font-size:34px;margin:0 0 12px;line-height:1.2;}
+  .home-hero p{font-size:15px;color:#C9D6E4;max-width:600px;line-height:1.6;margin:0;}
+  .home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+  .home-card{
+    background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:18px 20px;cursor:pointer;
+  }
+  .home-card:hover{border-color:var(--gold);}
+  .home-card .chip{
+    font-family:var(--mono);font-size:11px;width:30px;height:30px;border-radius:7px;
+    background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:10px;
+  }
+  .home-card h4{font-family:var(--serif);font-size:16.5px;margin:0 0 6px;color:var(--ink-2);}
+  .home-card p{font-size:12.5px;color:var(--text-dim);margin:0;line-height:1.55;}
+
+  .mix-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--gold-bg);color:#7A5A16;border:1px solid #E9CE8F;
+    padding:9px 16px;border-radius:8px;font-size:13.5px;font-weight:600;cursor:pointer;margin-top:4px;
+  }
+  .mix-btn:hover{background:#F7E7C4;}
+
+  ::selection{background:#CFE9DE;}
+  @media (max-width:820px){
+    .app{flex-direction:column;}
+    .sidebar{width:100%;flex:none;height:auto;position:relative;}
+    .main{padding:24px 18px 60px;max-width:100%;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="main" id="main"></main>
+</div>
+
+<script>
+/* =========================================================
+   HELPERS
+   ========================================================= */
+function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+function randFloat(min,max,decimals){
+  const v = Math.random()*(max-min)+min;
+  const f = Math.pow(10,decimals);
+  return Math.round(v*f)/f;
+}
+function choice(arr){return arr[randInt(0,arr.length-1)];}
+function fmt(n,decimals){
+  if(decimals===undefined) decimals=2;
+  if(n===null||n===undefined||isNaN(n)) return '—';
+  return n.toLocaleString('en-US',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+}
+function pct(n,decimals){ if(decimals===undefined) decimals=2; return fmt(n*100,decimals)+'%'; }
+function money(n,decimals){ if(decimals===undefined) decimals=2; const s = n<0?'-':''; return s+'$'+fmt(Math.abs(n),decimals); }
+
+/* =========================================================
+   CHAPTER DATA: concepts + formulas
+   ========================================================= */
+const CHAPTERS = [
+{
+  id:17, roman:'XVII', title:'Capital Structure in a Perfect Market',
+  subtitle:'MM Proposition I & II, WACC, leverage & beta — Text Ch. 17',
+  concepts:[
+    {h:'The capital structure pie', p:['Capital structure is the mix of financing instruments a firm uses. With just debt and equity, firm value is V = D + E, where D is the market value of debt and E the market value of equity.',
+      'Two central questions: what happens to the cost of financing as the mix changes, and is there an optimal mix?']},
+    {h:'Perfect capital markets', p:['MM\'s analysis rests on three assumptions: (1) investors and firms trade the same securities at prices equal to the present value of future cash flows; (2) there are no taxes, transaction costs, or issuance costs; (3) a firm\'s financing choices don\'t change the cash flows generated by its investments or reveal new information about them.']},
+    {h:'MM Proposition I', p:['In a perfect capital market, total firm value equals the market value of the cash flows generated by its assets and is unaffected by capital structure: V_U = V_L.',
+      'This rests on the no-arbitrage principle — if two portfolios produce identical payoffs, they must have the same price today. If E_L is mispriced relative to V_U − D, you can construct a portfolio of L\'s debt and equity (or a levered position in U) to arbitrage the difference.']},
+    {h:'Homemade leverage', p:['If a firm doesn\'t use the leverage an investor wants, the investor can borrow personally and buy shares — "homemade leverage" — to replicate the payoff of a levered position. This is why capital structure is irrelevant to investors in perfect markets: they can undo or recreate any choice the firm makes.']},
+    {h:'MM Proposition II', p:['Leverage increases the expected return on equity, but also its risk. Since pretax WACC (r_U) doesn\'t depend on capital structure, r_E must rise with leverage to compensate: r_E = r_U + (D/E)(r_U − r_D).',
+      'A firm\'s WACC in a perfect market equals r_U regardless of the debt/equity split — using more "cheap" debt does not lower WACC, because it makes remaining equity riskier and more expensive.']},
+    {h:'Unlevering and relevering beta', p:['The asset (unlevered) beta measures the risk of operations, independent of financing: β_U = β_E·E/(D+E) + β_D·D/(D+E). If debt is close to risk-free, β_D ≈ 0.',
+      'When leverage changes, β_U stays fixed but β_E moves with it — exactly analogous to MM Proposition II.']},
+    {h:'Net debt', p:['Cash and risk-free securities on the balance sheet act like negative debt — they reduce the risk of the firm\'s assets. To isolate the risk of operations, leverage should be measured using net debt = debt − cash, and enterprise value = D + E − Cash.']},
+    {h:'Two common fallacies', p:['Fallacy 1: leverage raises expected EPS, so it must raise the share price. Wrong — higher expected EPS comes with higher risk, and the discount rate rises too.',
+      'Fallacy 2: issuing equity dilutes value because cash flow is spread over more shares. Wrong — new shares are issued for cash of equal value, so there\'s no dilution in a perfect market: the pie gets bigger by exactly what was paid in.']}
+  ],
+  formulas:[
+    {n:'Firm value', e:'V = D + E'},
+    {n:'MM Proposition I', e:'V_U = V_L'},
+    {n:'Cost of equity (CAPM)', e:'r_E = r_f + β_E(r_M − r_f)'},
+    {n:'Unlevered / asset cost of capital', e:'r_U = (E/V)r_E + (D/V)r_D'},
+    {n:'MM Proposition II', e:'r_E = r_U + (D/E)(r_U − r_D)'},
+    {n:'WACC (no taxes)', e:'r_wacc = (E/V)r_E + (D/V)r_D = r_U'},
+    {n:'Unlevered beta', e:'β_U = β_E · E/(D+E)'},
+    {n:'Enterprise value (net debt)', e:'EV = D + E − Cash'}
+  ],
+  mcq:[
+    {q:'Under MM Proposition I in a perfect capital market, the total value of a firm is determined primarily by:',
+     choices:['Its choice between debt and equity financing','The market value of the cash flows generated by its assets','Its dividend policy','The number of shares outstanding'],
+     correct:1, explain:'MM I says financing is a "slicing of the pie" — it doesn\'t change the size of the pie, which is set by the cash flows the assets generate.'},
+    {q:'Which of these is NOT one of the standard "perfect capital markets" assumptions?',
+     choices:['No taxes, transaction costs, or issuance costs','Investors and firms trade the same securities at competitive prices equal to PV of cash flows','Financing decisions don\'t change investment cash flows or reveal new information','Firms can always borrow at subsidized, below-market interest rates'],
+     correct:3, explain:'Subsidized borrowing is a market imperfection, not a perfect-markets assumption — MM explicitly assumes securities are fairly priced and there are no special financing advantages.'},
+    {q:'As a firm\'s debt-equity ratio rises (holding r_D roughly fixed and no default risk), MM Proposition II implies that r_E:',
+     choices:['Falls, since debt is cheaper','Stays exactly the same','Rises, to compensate equity holders for added financial risk','Becomes negative'],
+     correct:2, explain:'r_E = r_U + (D/E)(r_U − r_D). As D/E rises, the extra risk term grows, pushing r_E up.'},
+    {q:'In perfect capital markets, a firm\'s pretax WACC as leverage increases:',
+     choices:['Falls, because debt is a cheaper source of capital','Stays constant and equal to r_U, the unlevered cost of capital','Rises without bound','Depends only on the corporate tax rate'],
+     correct:1, explain:'This is the heart of the "WACC fallacy": more debt lowers the weight on expensive equity, but raises r_E by just enough to leave the weighted average unchanged.'},
+    {q:'A firm\'s asset (unlevered) beta primarily reflects:',
+     choices:['The risk of its dividend policy','The risk of its underlying operations, independent of how they are financed','The risk of its debt only','The average beta of the stock market'],
+     correct:1, explain:'β_U isolates business/operating risk. Relevering (changing D/E) redistributes that fixed risk between debt and equity holders, but doesn\'t change β_U itself.'},
+    {q:'Cash and risk-free securities held on a firm\'s balance sheet act like:',
+     choices:['Additional debt, raising the risk of the assets','Negative debt, reducing the risk of the assets','Equity, and should be added to E','Nothing — they are irrelevant to risk'],
+     correct:1, explain:'Because cash is (near) risk-free, holding it offsets some of the risk from debt. That\'s why leverage and asset beta are usually measured using net debt = debt − cash.'}
+  ],
+  generators:[
+    { name:'MM I: value of levered equity', blurb:'Given an unlevered firm and a levered twin, find E_L.',
+      generate: function(){
+        const CF = randInt(6,16);
+        const rU = randFloat(0.06,0.13,2);
+        const Vu = CF/rU;
+        const D = Math.round(Vu*randFloat(0.2,0.6,2)*10)/10;
+        const rD = randFloat(0.03,0.07,3);
+        const EL = Vu - D;
+        return {
+          prompt:`Firm U is unlevered, with a perpetual pretax cash flow of <b>$${CF} million per year forever</b> (next payment in one year) and an unlevered cost of capital of <b>r_U = ${pct(rU)}</b>. Firm L is identical in every way except that it has issued <b>$${fmt(D,1)} million</b> of perpetual, risk-free debt at <b>r_D = ${pct(rD)}</b>. Capital markets are perfect. According to MM Proposition I, what is the value of Firm L's equity, E_L?`,
+          unit:'$ million', answer:EL,
+          steps:[
+            `Value Firm U as a perpetuity: V_U = CF / r_U = ${CF} / ${rU} = <span class="work">$${fmt(Vu,2)}M</span>.`,
+            `MM Proposition I says capital structure can\'t change firm value, so V_L = V_U = <span class="work">$${fmt(Vu,2)}M</span> (the interest rate on debt doesn\'t even enter here — it would only matter for splitting the pie, not its size).`,
+            `Equity is what\'s left after debt: E_L = V_L − D = ${fmt(Vu,2)} − ${fmt(D,1)} = <span class="work">$${fmt(EL,2)}M</span>.`
+          ],
+          final:`E_L = $${fmt(EL,2)} million`
+        };
+      }
+    },
+    { name:'MM II: cost of levered equity', blurb:'Use MM Proposition II to find r_E from D/E.',
+      generate:function(){
+        const rU = randFloat(0.08,0.14,3);
+        const rD = randFloat(0.03,Math.max(0.04,rU-0.02),3);
+        const DE = randFloat(0.3,2.0,1);
+        const rE = rU + DE*(rU-rD);
+        return {
+          prompt:`A firm operating in perfect capital markets has an unlevered cost of capital of <b>r_U = ${pct(rU)}</b> and a cost of debt of <b>r_D = ${pct(rD)}</b>. It maintains a debt-to-equity ratio of <b>D/E = ${DE}</b>. Using MM Proposition II, what is the firm's cost of equity, r_E?`,
+          unit:'%', answer:rE*100,
+          steps:[
+            `MM Proposition II: r_E = r_U + (D/E)(r_U − r_D).`,
+            `r_E = ${pct(rU)} + ${DE} × (${pct(rU)} − ${pct(rD)}) = ${pct(rU)} + ${DE} × ${pct(rU-rD)}.`,
+            `r_E = ${pct(rU)} + ${pct(DE*(rU-rD))} = <span class="work">${pct(rE)}</span>.`
+          ],
+          final:`r_E = ${pct(rE)}`
+        };
+      }
+    },
+    { name:'WACC as a weighted average', blurb:'Blend r_E and r_D by market-value weights (no taxes).',
+      generate:function(){
+        const f = randFloat(0.2,0.7,2);
+        const rE = randFloat(0.10,0.19,3);
+        const rD = randFloat(0.03,0.07,3);
+        const wacc = f*rD + (1-f)*rE;
+        return {
+          prompt:`A firm has a market-value debt ratio of <b>D/V = ${pct(f)}</b>, a cost of equity of <b>r_E = ${pct(rE)}</b>, and a cost of debt of <b>r_D = ${pct(rD)}</b>. Capital markets are perfect (no taxes). What is the firm's WACC?`,
+          unit:'%', answer:wacc*100,
+          steps:[
+            `WACC is a market-value weighted average: r_wacc = (E/V)r_E + (D/V)r_D.`,
+            `E/V = 1 − ${pct(f)} = ${pct(1-f)}.`,
+            `r_wacc = ${pct(1-f)} × ${pct(rE)} + ${pct(f)} × ${pct(rD)} = ${pct((1-f)*rE)} + ${pct(f*rD)} = <span class="work">${pct(wacc)}</span>.`
+          ],
+          final:`r_wacc = ${pct(wacc)} (and in a perfect market this equals r_U)`
+        };
+      }
+    },
+    { name:'Unlever & relever an equity beta', blurb:'Strip out financing risk, then re-apply it at a new D/E.',
+      generate:function(){
+        const betaE = randFloat(0.9,1.9,2);
+        const D1 = randInt(20,80);
+        const E1 = randInt(80,220);
+        const betaU = betaE*E1/(D1+E1);
+        const D2 = randInt(20,120);
+        const E2 = randInt(60,220);
+        const betaE2 = betaU*(D2+E2)/E2;
+        return {
+          prompt:`A firm currently has equity beta <b>β_E = ${fmt(betaE,2)}</b>, debt of <b>$${D1}M</b> (assume β_D ≈ 0), and equity of <b>$${E1}M</b>. Management is considering recapitalizing to <b>$${D2}M</b> of debt and <b>$${E2}M</b> of equity, with the same total business risk. What would the new equity beta be?`,
+          unit:'(beta)', answer:betaE2,
+          steps:[
+            `First unlever: β_U = β_E × E/(D+E) = ${fmt(betaE,2)} × ${E1}/${D1+E1} = <span class="work">${fmt(betaU,3)}</span>. This is the risk of the operations alone.`,
+            `Business risk (β_U) doesn\'t change with the recap — only how it\'s split between debt and equity does.`,
+            `Relever at the new mix: β_E' = β_U × (D+E)/E = ${fmt(betaU,3)} × ${D2+E2}/${E2} = <span class="work">${fmt(betaE2,3)}</span>.`
+          ],
+          final:`New β_E ≈ ${fmt(betaE2,2)}`
+        };
+      }
+    },
+    { name:'Net debt & the asset beta', blurb:'Cash is negative debt — unlever using net debt.',
+      generate:function(){
+        const E = randFloat(60,220,1);
+        const betaE = randFloat(0.8,1.7,2);
+        const D = randFloat(10,60,1);
+        const Cash = randFloat(5,Math.max(8,D-2),1);
+        const netDebt = D - Cash;
+        const EV = D + E - Cash;
+        const betaU = betaE*E/(E+netDebt);
+        return {
+          prompt:`A company has equity with a market value of <b>$${fmt(E,1)}B</b> and an equity beta of <b>${fmt(betaE,2)}</b>. It has debt of <b>$${fmt(D,1)}B</b> and cash & short-term investments of <b>$${fmt(Cash,1)}B</b>. Treating cash and debt as having zero beta, what is the beta of its underlying business (using net debt)?`,
+          unit:'(beta)', answer:betaU,
+          steps:[
+            `Net debt = Debt − Cash = ${fmt(D,1)} − ${fmt(Cash,1)} = <span class="work">$${fmt(netDebt,1)}B</span>. Enterprise value = D + E − Cash = <span class="work">$${fmt(EV,1)}B</span>.`,
+            `Unlever using net debt (cash has β ≈ 0, so it offsets some of the debt\'s effect): β_U = β_E × E / (E + Net Debt).`,
+            `β_U = ${fmt(betaE,2)} × ${fmt(E,1)} / (${fmt(E,1)} + ${fmt(netDebt,1)}) = <span class="work">${fmt(betaU,3)}</span>.`
+          ],
+          final:`β_U ≈ ${fmt(betaU,3)} (Enterprise value = $${fmt(EV,1)}B)`
+        };
+      }
+    }
+  ]
+},
+{
+  id:18, roman:'XVIII', title:'Debt and Taxes',
+  subtitle:'The interest tax shield, leveraged recaps, and WACC with taxes — Text Ch. 18',
+  concepts:[
+    {h:'Why taxes matter for capital structure', p:['MM assumes no market imperfections. Once we add corporate taxes, capital structure starts to matter: because interest is tax-deductible while dividends are not, debt financing creates a tax advantage.']},
+    {h:'The interest tax shield', p:['An all-equity firm with EBIT and tax rate τ_c pays shareholders EBIT(1−τ_c). A levered firm paying interest I first deducts I, so it pays taxes on (EBIT−I); total cash to all investors is (EBIT−I)(1−τ_c) + I = EBIT(1−τ_c) + I·τ_c.',
+      'The extra term, I·τ_c, is the interest tax shield — the tax savings that debt generates each year.']},
+    {h:'MM Proposition I with corporate taxes', p:['V_L = V_U + PV(interest tax shield). Leverage now increases firm value, because the government effectively subsidizes debt financing through the tax code.']},
+    {h:'Valuing the shield: finite vs. permanent debt', p:['For a known schedule of interest payments, discount the tax shields (usually at r_D, since their risk mirrors the debt\'s own risk).',
+      'For debt held constant in perpetuity, the tax shield each year is τ_c·r_D·D, a perpetuity that (discounted at r_D) has present value simply PV(ITS) = τ_c·D — each dollar of new permanent debt adds τ_c dollars to firm value.']},
+    {h:'WACC with taxes', p:['Because interest is deductible, the effective after-tax cost of debt is r_D(1−τ_c). This gives the standard after-tax WACC: r_wacc = (E/V)r_E + (D/V)r_D(1−τ_c). Unlike the no-tax case, r_wacc now declines as leverage increases.']},
+    {h:'Leveraged recapitalization', p:['A "recap" changes capital structure; a leveraged recap issues debt to repurchase shares. On the announcement, the market immediately capitalizes the expected interest tax shield into the stock price — existing shareholders capture essentially all of that value, even before the buyback happens.']},
+    {h:'Limits to the tax benefit of debt', p:['If firms only cared about minimizing tax, they\'d borrow until interest expense equalled EBIT. In reality, future EBIT is uncertain (excess leverage risks default), and firms have other tax shields (CCA, credits, loss carryforwards) that reduce the marginal value of interest deductions. Other imperfections — distress and agency costs — also push the other way, which is why debt ratios vary a lot across industries.']}
+  ],
+  formulas:[
+    {n:'Interest tax shield (per period)', e:'ITS = τ_c × Interest'},
+    {n:'Total after-tax CF to all investors', e:'EBIT(1−τ_c) + τ_c·I'},
+    {n:'MM I with corporate taxes', e:'V_L = V_U + PV(ITS)'},
+    {n:'PV(ITS), permanent debt', e:'PV(ITS) = τ_c × D'},
+    {n:'PV(ITS), n years, interest-only loan', e:'PV = τ_cr_DD × [1−(1+r_D)^−n]/r_D'},
+    {n:'WACC with taxes', e:'r_wacc = (E/V)r_E + (D/V)r_D(1−τ_c)'}
+  ],
+  mcq:[
+    {q:'The interest tax shield exists because:',
+     choices:['Dividends are tax deductible','Interest payments are deductible against corporate taxable income','Capital gains are untaxed','Debt principal repayments are deductible'],
+     correct:1, explain:'Interest is an expense for tax purposes; dividends are a distribution of after-tax profit and are not deductible. That asymmetry is the whole source of the tax advantage of debt.'},
+    {q:'MM Proposition I with corporate taxes states that:',
+     choices:['V_L = V_U always, taxes don\'t matter','V_L = V_U + PV(interest tax shield)','V_L is always less than V_U once taxes are introduced','Firm value is independent of the corporate tax rate'],
+     correct:1, explain:'Adding the corporate-tax imperfection breaks the irrelevance result from Ch.17: leverage now adds value equal to the present value of the tax shields it generates.'},
+    {q:'For a firm that maintains a constant level of permanent debt D (with the tax shield discounted at r_D), the present value of the interest tax shield is approximately:',
+     choices:['D','τ_c × D','r_D × D','τ_c × r_D'],
+     correct:1, explain:'The shield is a perpetuity of τ_c·r_D·D discounted at r_D, which simplifies to τ_c·D — each dollar of permanent debt is worth τ_c extra dollars of firm value.'},
+    {q:'As leverage increases, WACC computed with corporate taxes:',
+     choices:['Stays constant, equal to r_U','Increases without bound','Declines, because of the after-tax cost of debt term','Is unaffected by the tax rate'],
+     correct:2, explain:'Unlike the perfect-markets case, WACC with taxes falls as D/V rises, since the discount for the tax-deductibility of interest, r_D(1−τ_c), lowers the weighted average.'},
+    {q:'On the announcement of a leveraged recapitalization (before any shares are actually repurchased), the stock price typically:',
+     choices:['Stays exactly the same until the buyback is completed','Rises immediately, reflecting the present value of the interest tax shield being capitalized in','Falls, because debt increases risk','Is unaffected since nothing has happened yet'],
+     correct:1, explain:'Markets are forward-looking: the moment the plan is credible, expected future tax savings get built into today\'s equity value, even before the debt is actually issued and shares bought back.'},
+    {q:'Why don\'t firms lever up to the point that interest expense equals EBIT, which would minimize taxes?',
+     choices:['This is illegal in most jurisdictions','Future EBIT is uncertain, and other imperfections like financial distress costs limit optimal leverage','Interest is not actually deductible above a threshold','Doing so would violate MM Proposition I'],
+     correct:1, explain:'Pure tax-minimization ignores risk. Because future EBIT is uncertain, pushing interest that high risks default; other imperfections (financial distress, agency costs) also constrain how much debt is optimal.'}
+  ],
+  generators:[
+    { name:'After-tax cash flow with leverage', blurb:'Split EBIT between the tax authority, debtholders, and shareholders.',
+      generate:function(){
+        const EBIT = randInt(80,160);
+        const I = randInt(10,Math.floor(EBIT*0.3));
+        const tc = randFloat(0.25,0.45,2);
+        const totalAllInvestors = (EBIT-I)*(1-tc) + I;
+        return {
+          prompt:`A firm has EBIT of <b>$${EBIT}</b> per year and pays <b>$${I}</b> of interest annually on its debt. The corporate tax rate is <b>τ_c = ${pct(tc)}</b>. What is the total after-tax cash flow available to <b>all</b> investors (debt + equity holders combined)?`,
+          unit:'$', answer:totalAllInvestors,
+          steps:[
+            `Taxable income = EBIT − Interest = ${EBIT} − ${I} = <span class="work">${EBIT-I}</span>.`,
+            `After-tax cash flow to shareholders = (EBIT − I)(1 − τ_c) = ${EBIT-I} × ${fmt(1-tc,2)} = <span class="work">${fmt((EBIT-I)*(1-tc),2)}</span>.`,
+            `Cash flow to debtholders = Interest = <span class="work">${I}</span> (received in full, before any tax).`,
+            `Total to all investors = ${fmt((EBIT-I)*(1-tc),2)} + ${I} = <span class="work">${fmt(totalAllInvestors,2)}</span> — equivalently EBIT(1−τ_c) + τ_c·I = ${fmt(EBIT*(1-tc),2)} + ${fmt(tc*I,2)}.`
+          ],
+          final:`Total after-tax CF to all investors = $${fmt(totalAllInvestors,2)}`
+        };
+      }
+    },
+    { name:'PV of the interest tax shield (finite loan)', blurb:'Discount a stream of tax shields from an interest-only loan.',
+      generate:function(){
+        const D = randInt(50,150);
+        const rD = randFloat(0.03,0.06,3);
+        const n = randInt(3,7);
+        const tc = randFloat(0.25,0.40,2);
+        const itsPerYear = D*rD*tc;
+        const annuityFactor = (1-Math.pow(1+rD,-n))/rD;
+        const pv = itsPerYear*annuityFactor;
+        return {
+          prompt:`A firm borrows <b>$${D} million</b> for <b>${n} years</b> at a fixed, risk-free interest rate of <b>${pct(rD)}</b> (interest-only, principal repaid at maturity). The corporate tax rate is <b>τ_c = ${pct(tc)}</b>. Discounting the tax shields at the firm's cost of debt, what is the present value of the interest tax shield?</b>`,
+          unit:'$ million', answer:pv,
+          steps:[
+            `Annual interest = D × r_D = ${D} × ${rD} = <span class="work">$${fmt(D*rD,3)}M</span>. This stays constant since it's an interest-only loan.`,
+            `Annual tax shield = τ_c × Interest = ${pct(tc)} × ${fmt(D*rD,3)} = <span class="work">$${fmt(itsPerYear,3)}M</span> per year, for ${n} years.`,
+            `Since the shield is only as risky as the debt itself, discount it at r_D using an ${n}-year annuity factor: [1 − (1+r_D)^−${n}] / r_D = <span class="work">${fmt(annuityFactor,3)}</span>.`,
+            `PV(ITS) = ${fmt(itsPerYear,3)} × ${fmt(annuityFactor,3)} = <span class="work">$${fmt(pv,3)}M</span>.`
+          ],
+          final:`PV(ITS) ≈ $${fmt(pv,2)} million`
+        };
+      }
+    },
+    { name:'PV of the interest tax shield (permanent debt)', blurb:'The one-line formula for a perpetual, constant debt level.',
+      generate:function(){
+        const D = randInt(40,320);
+        const tc = randFloat(0.25,0.42,2);
+        const pv = D*tc;
+        return {
+          prompt:`A firm intends to maintain <b>$${D} million</b> of debt permanently (constant perpetual debt). Its corporate tax rate is <b>τ_c = ${pct(tc)}</b>. What is the present value of the interest tax shield this creates?`,
+          unit:'$ million', answer:pv,
+          steps:[
+            `For constant perpetual debt, the tax shield each year is τ_c·r_D·D — a perpetuity.`,
+            `Discounting that perpetuity at r_D (the shield\'s own risk) cancels r_D out entirely: PV(ITS) = (τ_c·r_D·D)/r_D = τ_c·D.`,
+            `PV(ITS) = ${pct(tc)} × ${D} = <span class="work">$${fmt(pv,2)}M</span>. Notice the interest rate never had to be specified.`
+          ],
+          final:`PV(ITS) = $${fmt(pv,2)} million`
+        };
+      }
+    },
+    { name:'WACC with corporate taxes', blurb:'Blend r_E and the after-tax cost of debt.',
+      generate:function(){
+        const f = randFloat(0.2,0.7,2);
+        const rE = randFloat(0.10,0.19,3);
+        const rD = randFloat(0.03,0.07,3);
+        const tc = randFloat(0.25,0.42,2);
+        const wacc = (1-f)*rE + f*rD*(1-tc);
+        return {
+          prompt:`A firm has D/V = <b>${pct(f)}</b>, cost of equity <b>r_E = ${pct(rE)}</b>, cost of debt <b>r_D = ${pct(rD)}</b>, and a corporate tax rate of <b>τ_c = ${pct(tc)}</b>. What is its WACC?`,
+          unit:'%', answer:wacc*100,
+          steps:[
+            `r_wacc = (E/V)r_E + (D/V)r_D(1−τ_c).`,
+            `After-tax cost of debt = r_D(1−τ_c) = ${pct(rD)} × ${fmt(1-tc,2)} = <span class="work">${pct(rD*(1-tc))}</span>.`,
+            `r_wacc = ${pct(1-f)} × ${pct(rE)} + ${pct(f)} × ${pct(rD*(1-tc))} = <span class="work">${pct(wacc)}</span>.`
+          ],
+          final:`r_wacc = ${pct(wacc)}`
+        };
+      }
+    },
+    { name:'Leveraged recapitalization: post-announcement price', blurb:'Capitalize the interest tax shield into the share price.',
+      generate:function(){
+        const N0 = randInt(50,200)*100;
+        const P0 = randFloat(8,20,2);
+        const D = randInt(20,80)*1000;
+        const tc = randFloat(0.25,0.40,2);
+        const equity0 = N0*P0;
+        const its = D*tc;
+        const equity1 = equity0 + its;
+        const P1 = equity1/N0;
+        return {
+          prompt:`A firm has <b>${fmt(N0,0)}</b> shares outstanding trading at <b>$${fmt(P0,2)}</b> each (all-equity financed). It announces a leveraged recapitalization: it will issue <b>$${fmt(D,0)}</b> of permanent debt and use the proceeds to repurchase shares. The tax rate is <b>τ_c = ${pct(tc)}</b>. What will the share price be immediately after the announcement, but before any shares are actually repurchased?`,
+          unit:'$ per share', answer:P1,
+          steps:[
+            `Initial equity value = N₀ × P₀ = ${fmt(N0,0)} × ${fmt(P0,2)} = <span class="work">$${fmt(equity0,2)}</span>.`,
+            `Interest tax shield from the new permanent debt = τ_c × D = ${pct(tc)} × ${fmt(D,0)} = <span class="work">$${fmt(its,2)}</span>.`,
+            `The market capitalizes this immediately: new (pre-buyback) equity value = ${fmt(equity0,2)} + ${fmt(its,2)} = <span class="work">$${fmt(equity1,2)}</span>.`,
+            `Since the share count hasn\'t changed yet, new price = ${fmt(equity1,2)} / ${fmt(N0,0)} = <span class="work">$${fmt(P1,3)}</span> per share.`
+          ],
+          final:`Post-announcement price ≈ $${fmt(P1,2)} per share`
+        };
+      }
+    }
+  ]
+},
+{
+  id:19, roman:'XIX', title:'Financial Distress, Managerial Incentives, and Information',
+  subtitle:'Distress costs, the tradeoff theory, agency conflicts, and signaling — Text Ch. 19',
+  concepts:[
+    {h:'Financial distress & default', p:['A firm is in financial distress when it has trouble meeting obligations to creditors. Default occurs when a required interest or principal payment is missed; debtholders then gain legal rights over the firm\'s assets via bankruptcy. Equity carries no such risk, since dividends are never a legal obligation.']},
+    {h:'Bankruptcy: liquidation vs. reorganization', p:['Liquidation terminates the firm, selling assets and distributing proceeds by priority. Reorganization keeps the firm as a going concern, often replacing old securities with new ones. In Canada, this happens under the Bankruptcy and Insolvency Act (BIA, typically smaller firms) or the CCAA (larger firms).']},
+    {h:'Direct vs. indirect costs of distress', p:['Direct costs — legal and administrative fees for lawyers, consultants, appraisers — are typically only 3–4% of pre-distress asset value. Indirect costs (lost customers, lost employees, fire-sale asset prices, distracted management) are much harder to measure but are often far larger.']},
+    {h:'Who bears the costs?', p:['In a world with rational, forward-looking investors, the expected costs of financial distress reduce the value of the firm\'s assets today — and because equity is a residual claim, it is shareholders who effectively bear these costs, priced in before the debt is even issued.']},
+    {h:'Tradeoff theory', p:['Firms weigh the tax benefit of debt against the expected cost of financial distress: V_L = V_U + PV(interest tax shield) − PV(financial distress costs). At low debt levels the tax shield dominates; as debt rises, distress costs grow and eventually offset it, giving an interior optimum.']},
+    {h:'Agency costs: asset substitution', p:['Near financial distress, equity holders can gain by taking on high-risk (even negative-NPV) projects: they get the upside if it pays off, while debtholders absorb the downside if it fails, since equity\'s downside is already floored near zero.']},
+    {h:'Agency costs: debt overhang / under-investment', p:['Heavily indebted firms may forgo positive-NPV projects if most of the payoff would go to existing debtholders rather than the equity holders funding the investment — leverage can discourage otherwise value-adding investment.']},
+    {h:'Agency benefits of leverage', p:['Leverage can discipline managers: fixed debt payments limit free cash flow available for wasteful spending, and can help owner-managers retain a larger equity stake, sharpening incentives.']},
+    {h:'Asymmetric information: signaling', p:['The credibility principle: self-interested claims are only believable if backed by actions that would be too costly if untrue. Taking on debt commits a firm to future payments, credibly signaling management\'s confidence in future cash flows — leverage increases tend to be read as good news.']},
+    {h:'Adverse selection & the pecking order', p:['Managers who believe their equity is undervalued avoid issuing new shares (since underpriced sales hurt existing shareholders); only overvalued firms are eager to sell equity, so the market discounts new issues. This leads to the pecking order hypothesis: firms prefer retained earnings first, then debt, and equity only as a last resort.']}
+  ],
+  formulas:[
+    {n:'Tradeoff theory', e:'V_L = V_U + PV(ITS) − PV(distress costs)'},
+    {n:'Extended tradeoff theory', e:'V_L = V_U + PV(ITS) − PV(distress) − PV(agency costs) + PV(agency benefits)'},
+    {n:'Expected value under uncertainty', e:'PV = [p·CF_good + (1−p)·CF_bad] / (1+r)'}
+  ],
+  mcq:[
+    {q:'In Canada, formal bankruptcy proceedings typically occur under:',
+     choices:['The Bankruptcy and Insolvency Act (BIA) or the CCAA','Chapter 11 of the U.S. bankruptcy code only','Provincial securities regulations','TSX listing bylaws'],
+     correct:0, explain:'The BIA is generally used for smaller firms, while larger firms typically restructure under the Companies\' Creditors Arrangement Act (CCAA).'},
+    {q:'Liquidation differs from reorganization in that liquidation:',
+     choices:['Keeps the firm operating as a going concern','Involves selling the firm\'s assets and distributing proceeds to creditors by priority','Only applies to firms with no debt','Always happens before reorganization is attempted'],
+     correct:1, explain:'Reorganization tries to preserve the firm as an operating entity (often via new securities); liquidation terminates it and sells off the assets.'},
+    {q:'Compared to direct costs of financial distress (legal, administrative fees), indirect costs tend to be:',
+     choices:['Smaller and easier to measure precisely','Larger, but much harder to measure directly','Irrelevant to firm value','Borne entirely by debtholders, never equity'],
+     correct:1, explain:'Direct costs run roughly 3–4% of pre-distress asset value and are relatively easy to observe; indirect costs (lost sales, key employees leaving, fire-sale pricing) are typically larger but hard to quantify.'},
+    {q:'The tradeoff theory says firm value with leverage equals:',
+     choices:['V_U alone, since debt doesn\'t matter','V_U + PV(interest tax shield) − PV(financial distress costs)','V_U minus the interest tax shield','Total assets minus total liabilities, always'],
+     correct:1, explain:'This is the central equation of tradeoff theory: leverage adds value through the tax shield but subtracts value through the expected cost of financial distress.'},
+    {q:'"Debt overhang" describes a situation where:',
+     choices:['Equity holders take on excessively risky projects','A heavily indebted firm passes up positive-NPV projects because most of the payoff would go to existing debtholders','Debtholders convert their claims into equity','A firm has too little debt to fund growth'],
+     correct:1, explain:'If new investment mostly ends up repaying existing creditors, equity holders (who fund the investment) may rationally refuse to invest even in value-adding projects.'},
+    {q:'"Asset substitution" describes the incentive of equity holders near distress to:',
+     choices:['Pay down debt as fast as possible','Take on high-risk, even negative-NPV, projects, since they capture the upside while debtholders absorb the downside','Sell the company voluntarily at a discount','Convert debt into preferred shares'],
+     correct:1, explain:'Because equity is a call option on the firm\'s assets, its value can rise with volatility even when a project destroys overall firm value — the classic asset-substitution problem.'},
+    {q:'Signaling theory suggests that an announced increase in leverage is typically interpreted by investors as:',
+     choices:['Bad news, since risk has increased','Good news, since committing to fixed payments is credible only if management is confident in future cash flows','No news at all','A sign of impending default'],
+     correct:1, explain:'The credibility principle: taking on costly, binding obligations is a costly signal that only confident managers would be willing to make.'},
+    {q:'The pecking order hypothesis predicts firms prefer to finance new investment, in order, using:',
+     choices:['New equity, then debt, then retained earnings','Retained earnings first, then debt, then new equity only as a last resort','Debt first, then equity, then retained earnings','All three sources in exactly equal proportions'],
+     correct:1, explain:'Retained earnings avoid adverse selection entirely; debt is less exposed to adverse selection than equity, so it\'s the middle option; equity, most exposed, is used last.'}
+  ],
+  generators:[
+    { name:'Share price with uncertain (unlevered) payoffs', blurb:'Value an all-equity firm facing two possible future states.',
+      generate:function(){
+        const good = randInt(200,320)*1000;
+        const bad = randInt(90,180)*1000;
+        const rf = randFloat(0.02,0.06,3);
+        const N = randInt(5,15)*1000;
+        const pv = 0.5*(good+bad)/(1+rf);
+        const price = pv/N;
+        return {
+          prompt:`A firm's only asset will, in one year, be worth <b>$${fmt(good,0)}</b> ("good" state) or <b>$${fmt(bad,0)}</b> ("bad" state), each with probability 0.5. Assume the asset\'s risk is diversifiable (β = 0), so cash flows can be discounted at the risk-free rate of <b>${pct(rf)}</b>. There are no taxes. The firm is currently all-equity financed with <b>${fmt(N,0)}</b> shares. What is today's share price?`,
+          unit:'$ per share', answer:price,
+          steps:[
+            `Expected payoff in one year = 0.5 × ${fmt(good,0)} + 0.5 × ${fmt(bad,0)} = <span class="work">$${fmt(0.5*(good+bad),0)}</span>.`,
+            `Discount at the risk-free rate: PV of assets = ${fmt(0.5*(good+bad),0)} / (1+${rf}) = <span class="work">$${fmt(pv,2)}</span>.`,
+            `Since the firm is all-equity, this PV is the total value of equity. Share price = ${fmt(pv,2)} / ${fmt(N,0)} = <span class="work">$${fmt(price,3)}</span>.`
+          ],
+          final:`Share price ≈ $${fmt(price,2)}`
+        };
+      }
+    },
+    { name:'Splitting value between debt and equity in distress', blurb:'Add a risky debt claim and see who bears the downside.',
+      generate:function(){
+        const good = randInt(220,320)*1000;
+        const bad = randInt(90,170)*1000;
+        const rf = randFloat(0.02,0.05,3);
+        const F = Math.round((bad + randInt(5,Math.max(6,Math.floor((good-bad)*0.8))))/1000)*1000;
+        const debtGood = Math.min(F,good);
+        const debtBad = Math.min(F,bad);
+        const equityGood = good - debtGood;
+        const equityBad = Math.max(bad - F,0);
+        const pvEquity = 0.5*(equityGood+equityBad)/(1+rf);
+        const pvDebt = 0.5*(debtGood+debtBad)/(1+rf);
+        return {
+          prompt:`Same firm: assets will be worth <b>$${fmt(good,0)}</b> (good) or <b>$${fmt(bad,0)}</b> (bad) in one year, each with probability 0.5; r_f = <b>${pct(rf)}</b>; no taxes. Suppose the firm instead borrows, promising to repay a <b>face value of $${fmt(F,0)}</b> in one year (proceeds used to repurchase shares). What is the present value of equity now?`,
+          unit:'$', answer:pvEquity,
+          steps:[
+            `Debt is risky here because ${fmt(bad,0)} < ${fmt(F,0)}: in the bad state, debtholders can only be paid what\'s available. Debt payoff: good = min(F, ${fmt(good,0)}) = <span class="work">${fmt(debtGood,0)}</span>; bad = min(F, ${fmt(bad,0)}) = <span class="work">${fmt(debtBad,0)}</span>.`,
+            `Equity is the residual claim: good = ${fmt(good,0)} − ${fmt(debtGood,0)} = <span class="work">${fmt(equityGood,0)}</span>; bad = max(${fmt(bad,0)} − ${fmt(F,0)}, 0) = <span class="work">${fmt(equityBad,0)}</span>.`,
+            `PV(equity) = 0.5 × (${fmt(equityGood,0)} + ${fmt(equityBad,0)}) / (1+${rf}) = <span class="work">$${fmt(pvEquity,2)}</span>. (For reference, PV(debt) ≈ $${fmt(pvDebt,2)}, and PV(equity)+PV(debt) should equal the unlevered asset value.)`
+          ],
+          final:`PV(equity) ≈ $${fmt(pvEquity,2)}`
+        };
+      }
+    },
+    { name:'Agency cost: asset substitution', blurb:'A near-insolvent firm takes a risky bet — who benefits?',
+      generate:function(){
+        const cash = randInt(5,20);
+        const Fd = randInt(35,90);
+        const p = randFloat(0.05,0.20,2);
+        const X = Fd + randInt(30,80);
+        const r = randFloat(0.4,0.6,2);
+        const equityPayoff = p*(X-Fd)/(1+r);
+        const npvTotal = -cash + p*X/(1+r);
+        return {
+          prompt:`A firm has $${cash} in cash and no other assets of value. It has outstanding debt with a face value of $${Fd} due next year (so the firm is already effectively insolvent — assets < debt). Management is considering investing the entire $${cash} cash in a high-risk gamble: a ${pct(p)} chance of paying off $${X} next year, and a ${pct(1-p)} chance of paying $0. Given the risk, the appropriate discount rate is ${pct(r)}. What is the expected, discounted payoff <b>to equity holders</b> from taking this project?`,
+          unit:'$', answer:equityPayoff,
+          steps:[
+            `First, the project's own NPV: −${cash} + ${pct(p)} × ${X} / (1+${r}) = −${cash} + ${fmt(p*X/(1+r),2)} = <span class="work">${fmt(npvTotal,2)}</span> — a negative-NPV project overall.`,
+            `But equity is already worth ~$0 without the project (assets ${cash} ≪ debt ${Fd}). If the gamble fails, equity still gets $0 — no worse off. If it succeeds, equity gets the payoff above the debt claim: ${X} − ${Fd} = <span class="work">${X-Fd}</span>.`,
+            `Expected, discounted value to equity = p × (X − F_d) / (1+r) = ${pct(p)} × ${X-Fd} / (1+${r}) = <span class="work">$${fmt(equityPayoff,2)}</span>.`,
+            `Equity holders gain even though the project destroys value overall — a classic asset-substitution / risk-shifting problem, because debtholders bear all of the downside.`
+          ],
+          final:`Expected payoff to equity ≈ $${fmt(equityPayoff,2)} (project NPV overall ≈ ${fmt(npvTotal,2)})`
+        };
+      }
+    },
+    { name:'Agency cost: debt overhang', blurb:'A safe, positive-NPV project gets rejected because debt soaks up the payoff.',
+      generate:function(){
+        const I = randInt(20,40);
+        const r = randFloat(0.05,0.12,3);
+        const Y = Math.round(I*(1+r)*randFloat(1.1,1.4,2));
+        const Fd = Y + randInt(10,40);
+        const npvProject = -I + Y/(1+r);
+        const equityNPV = -I;
+        return {
+          prompt:`A firm has $0 cash and no other assets of value; it has debt with a face value of $${Fd} due next year. It has the chance to invest $${I} today in a project that pays a certain $${Y} next year (discount rate ${pct(r)}). Equity holders would have to fund the $${I} investment themselves. What is the NPV of this project <b>to the equity holders</b> if they fund it?`,
+          unit:'$', answer:equityNPV,
+          steps:[
+            `The project's own NPV is positive: −${I} + ${Y}/(1+${r}) = <span class="work">${fmt(npvProject,2)}</span> — this is a project the unlevered firm should clearly take.`,
+            `But debt of $${Fd} exceeds the certain payoff of $${Y}, so <b>all</b> of the $${Y} payoff next year would go to debtholders; equity would receive $0.`,
+            `Equity\'s NPV from funding the project = 0/(1+r) − ${I} = <span class="work">${fmt(equityNPV,2)}</span> — negative, so rational equity holders refuse to invest, even though the project adds value to the firm overall. This is debt overhang / under-investment.`
+          ],
+          final:`NPV to equity ≈ ${fmt(equityNPV,2)} (project is rejected despite positive firm-level NPV of ${fmt(npvProject,2)})`
+        };
+      }
+    }
+  ]
+},
+{
+  id:20, roman:'XX', title:'Payout Policy',
+  subtitle:'Dividends, repurchases, taxes, and signaling — Text Ch. 20',
+  concepts:[
+    {h:'Forms of payout', p:['Firms distribute free cash flow to equity holders as cash dividends or share repurchases (open market or tender offer). Stock dividends/splits distribute additional shares rather than cash and, in perfect markets, don\'t change investor wealth.']},
+    {h:'Dividend mechanics', p:['The board declares a dividend on the declaration date, payable to shareholders of record on the record date, and paid on the payment date. Because trades take time to settle, the ex-dividend date is the first day a buyer is no longer entitled to the dividend.']},
+    {h:'MM Dividend Irrelevance', p:['In perfect capital markets, holding the firm\'s investment policy fixed, dividend policy is irrelevant to value: investors can create "homemade dividends" by selling shares (to get more cash now) or buying more shares (to reinvest a dividend), replicating any payout pattern they want regardless of what the firm actually pays.']},
+    {h:'Personal taxes tilt the calculus', p:['If the personal tax rate on dividends (τ_d) exceeds that on capital gains (τ_g), taxable investors prefer repurchases. The indifference condition for selling just before vs. just after an ex-dividend date gives ΔP = P_cum − P_ex = Div(1−τ_d)/(1−τ_g).',
+      'From this we can define an effective dividend tax rate τ*_d = (τ_d − τ_g)/(1 − τ_g), so ΔP = Div×(1 − τ*_d). Firms should generally never issue new shares just to fund a cash dividend — investors get back less than they put in after taxes.']},
+    {h:'The clientele effect', p:['Investors in different tax situations (or accounts) have different preferences between dividends and capital gains, so firms may attract a "clientele" of investors whose tax profile matches their payout policy.']},
+    {h:'Payout vs. retention of cash', p:['MM Payout Irrelevance: if a firm invests excess cash in financial securities, whether it pays that cash out now or later doesn\'t affect firm value today, in perfect markets. Once corporate and personal taxes are added, there can be a genuine tax advantage or disadvantage to retaining cash: τ*_retain = 1 − [(1−T_c)(1−T_g)]/(1−T_i).',
+      'If τ*_retain is negative, there is a net tax advantage to the firm retaining cash rather than paying it out — this is why some sectors (tech, biotech) hold large cash balances.']},
+    {h:'Signaling with dividends', p:['Managers know more than outside investors. Because firms are reluctant to cut dividends, an increase signals confidence in sustainable future cash flows; a cut or omission is read as bad news. This is a weaker signal than leverage (dividends aren\'t a legal obligation), but empirically stock prices do react to dividend change announcements. Repurchases send a weaker signal still, since firms only announce a maximum spending amount with no binding commitment.']}
+  ],
+  formulas:[
+    {n:'Ex-dividend indifference (price drop)', e:'ΔP = Div·(1−τ_d)/(1−τ_g)'},
+    {n:'Effective dividend tax rate', e:'τ*_d = (τ_d − τ_g)/(1 − τ_g)'},
+    {n:'Effective price drop', e:'ΔP = Div × (1 − τ*_d)'},
+    {n:'Tax disadvantage of retaining cash', e:'τ*_retain = 1 − (1−T_c)(1−T_g)/(1−T_i)'},
+    {n:'Perpetuity share price', e:'P₀ = (CF / r) / shares outstanding'}
+  ],
+  mcq:[
+    {q:'MM Dividend Irrelevance states that, in perfect capital markets:',
+     choices:['Dividends always raise firm value','Holding investment policy fixed, a firm\'s dividend policy does not affect its value','Firms should never pay a dividend','Share repurchases always destroy value'],
+     correct:1, explain:'Investors can replicate any payout timing themselves via homemade dividends, so the firm\'s choice, on its own, adds no value in perfect markets.'},
+    {q:'"Homemade dividends" let an investor:',
+     choices:['Avoid taxes entirely, forever','Replicate or undo a firm\'s dividend policy by selling or buying shares on their own','Force the firm to change its dividend policy','Eliminate all risk from their portfolio'],
+     correct:1, explain:'If a firm pays too little cash for an investor\'s taste, the investor sells some shares; if it pays too much, the investor reinvests the excess by buying more shares.'},
+    {q:'If the personal tax rate on dividends exceeds that on capital gains, taxable investors generally prefer, all else equal:',
+     choices:['Cash dividends over repurchases','Repurchases over cash dividends','It makes no difference at all','Stock splits over any cash payout'],
+     correct:1, explain:'Repurchases let investors choose whether to realize a (often lower-taxed) capital gain, whereas a cash dividend triggers immediate, and possibly higher, dividend tax.'},
+    {q:'In a world with no taxes or transaction costs, on the ex-dividend date the share price should:',
+     choices:['Stay exactly the same','Rise by the amount of the dividend','Fall by (approximately) the amount of the dividend','Fall to zero'],
+     correct:2, explain:'The firm is worth less by exactly the cash that just left it, so the ex-dividend price falls by the dividend amount, ignoring minor time-value effects.'},
+    {q:'Empirical support for the dividend signaling hypothesis includes the observation that:',
+     choices:['Stock prices tend to fall when dividends are increased','Firms are reluctant to cut dividends, and prices tend to rise on increases / fall on cuts or suspensions','Dividend changes have no measurable effect on stock prices','Dividends grow faster than retained earnings during expansions'],
+     correct:1, explain:'Because dividends aren\'t a legal obligation, changing them credibly signals management\'s view of sustainable future cash flows — and the market reacts accordingly.'},
+    {q:'Firms with very large excess cash balances are disproportionately found in industries like:',
+     choices:['Regulated utilities and mature, low-growth businesses','High-tech and biotech, where flexibility to fund future R&D and investment is valuable','Industries with the highest leverage','It is roughly random across industries'],
+     correct:1, explain:'Firms facing significant uncertainty about future investment needs (tech, biotech) often value the flexibility of a cash buffer, especially when there can be a tax advantage to retaining it.'}
+  ],
+  generators:[
+    { name:'Ex-dividend indifference price drop', blurb:'Find the price drop that leaves an investor indifferent to timing.',
+      generate:function(){
+        const Div = randFloat(1,5,2);
+        const Td = randFloat(0.30,0.45,2);
+        const Tg = randFloat(0.15,Math.max(0.16,Td-0.05),2);
+        const dP = Div*(1-Td)/(1-Tg);
+        return {
+          prompt:`A stock is about to go ex-dividend, paying <b>$${fmt(Div,2)}</b> per share. An investor faces a personal tax rate on dividends of <b>τ_d = ${pct(Td)}</b> and on capital gains of <b>τ_g = ${pct(Tg)}</b>. What price drop, ΔP = P_cum − P_ex, would leave this investor exactly indifferent between selling just before vs. just after the ex-dividend date?`,
+          unit:'$ per share', answer:dP,
+          steps:[
+            `Indifference condition: ΔP = Div × (1 − τ_d) / (1 − τ_g).`,
+            `ΔP = ${fmt(Div,2)} × (1 − ${fmt(Td,2)}) / (1 − ${fmt(Tg,2)}) = ${fmt(Div,2)} × ${fmt(1-Td,2)} / ${fmt(1-Tg,2)}.`,
+            `ΔP = <span class="work">$${fmt(dP,3)}</span>. If the actual observed price drop is larger than this, taxable investors prefer to sell before the ex-dividend date; if smaller, they prefer to sell after (and collect the dividend).`
+          ],
+          final:`Indifferent price drop ΔP ≈ $${fmt(dP,2)}`
+        };
+      }
+    },
+    { name:'Tax (dis)advantage of retaining cash', blurb:'Combine corporate and personal taxes on retained cash.',
+      generate:function(){
+        const Tc = randFloat(0.20,0.31,3);
+        const Tg = randFloat(0.15,0.31,3);
+        const Ti = randFloat(0.40,0.55,3);
+        const tRetain = 1 - (1-Tc)*(1-Tg)/(1-Ti);
+        return {
+          prompt:`A corporation faces a corporate tax rate of <b>T_c = ${pct(Tc)}</b>. Its shareholders face a personal tax rate on capital gains of <b>T_g = ${pct(Tg)}</b> and on interest income of <b>T_i = ${pct(Ti)}</b>. What is the effective tax disadvantage (τ*_retain) of the firm retaining excess cash rather than paying it out?`,
+          unit:'%', answer:tRetain*100,
+          steps:[
+            `τ*_retain = 1 − (1−T_c)(1−T_g) / (1−T_i).`,
+            `(1−T_c)(1−T_g) = ${fmt(1-Tc,3)} × ${fmt(1-Tg,3)} = <span class="work">${fmt((1-Tc)*(1-Tg),4)}</span>. Divide by (1−T_i) = ${fmt(1-Ti,3)}: <span class="work">${fmt((1-Tc)*(1-Tg)/(1-Ti),4)}</span>.`,
+            `τ*_retain = 1 − ${fmt((1-Tc)*(1-Tg)/(1-Ti),4)} = <span class="work">${pct(tRetain,2)}</span>.${tRetain<0 ? ' A negative value means there is actually a net tax <i>advantage</i> to retaining cash (corporate + capital-gains tax on the retained earnings is lower than personal tax on interest income directly).':' A positive value means it is tax-costly for the firm to retain cash rather than pay it out.'}`
+          ],
+          final:`τ*_retain ≈ ${pct(tRetain,2)}`
+        };
+      }
+    },
+    { name:'Perpetuity share price under a dividend policy', blurb:'Value an all-equity firm paying out its cash flow as dividends.',
+      generate:function(){
+        const CF = randFloat(1.5,3.8,2);
+        const r = randFloat(0.08,0.14,3);
+        const N = randInt(100,300)*1000;
+        const totalV = CF*1000000/r;
+        const price = totalV/N;
+        return {
+          prompt:`An all-equity firm generates a perpetual free cash flow of <b>$${fmt(CF,2)} million per year</b>, all of which is paid out as dividends. Its cost of capital is <b>${pct(r)}</b>, and it has <b>${fmt(N,0)}</b> shares outstanding. What is today's share price?`,
+          unit:'$ per share', answer:price,
+          steps:[
+            `Total firm (equity) value = CF / r = ${fmt(CF,2)}M / ${r} = <span class="work">$${fmt(totalV,0)}</span>.`,
+            `Share price = Total value / shares outstanding = ${fmt(totalV,0)} / ${fmt(N,0)} = <span class="work">$${fmt(price,3)}</span>.`,
+            `(This is the baseline "pay it all out" policy — MM Dividend Irrelevance says other timing patterns for the same cash flows would give shareholders the same total value, just distributed differently over time.)`
+          ],
+          final:`Share price ≈ $${fmt(price,2)}`
+        };
+      }
+    },
+    { name:'Financing a special dividend with new equity', blurb:'How many new shares does a bigger payout require?',
+      generate:function(){
+        const CF = randFloat(2,4.2,2);
+        const N0 = randInt(150,300)*1000;
+        const r = randFloat(0.08,0.12,3);
+        const extraDiv = randFloat(3,10,2);
+        const totalV = CF*1000000/r;
+        const P0 = totalV/N0;
+        const cashNeeded = extraDiv*N0;
+        const newShares = cashNeeded/P0;
+        return {
+          prompt:`An all-equity firm earns a perpetual <b>$${fmt(CF,2)} million</b> per year, has <b>${fmt(N0,0)}</b> shares outstanding, and a required return of <b>${pct(r)}</b>. Management wants to pay a one-time special dividend of an extra <b>$${fmt(extraDiv,2)}</b> per share next year (on top of the regular payout), financed entirely by issuing new shares at the fair (ex-dividend) price. How many new shares must be issued?`,
+          unit:'shares', answer:newShares,
+          steps:[
+            `Current firm (equity) value = CF/r = ${fmt(CF,2)}M/${r} = <span class="work">$${fmt(totalV,0)}</span>; current price P₀ = ${fmt(totalV,0)} / ${fmt(N0,0)} = <span class="work">$${fmt(P0,3)}</span>.`,
+            `Total extra cash needed for the special dividend = extra dividend × current shares = ${fmt(extraDiv,2)} × ${fmt(N0,0)} = <span class="work">$${fmt(cashNeeded,0)}</span>.`,
+            `Under MM, new shares are issued at the fair value P₀ (no value is created or destroyed by the transaction itself): new shares = Cash needed / P₀ = ${fmt(cashNeeded,0)} / ${fmt(P0,3)} = <span class="work">${fmt(newShares,0)} shares</span>.`
+          ],
+          final:`New shares to issue ≈ ${fmt(newShares,0)}`
+        };
+      }
+    }
+  ]
+},
+{
+  id:21, roman:'XXI', title:'Capital Budgeting and Valuation With Leverage',
+  subtitle:'WACC, APV, flow-to-equity, and other leverage policies — Text Ch. 21',
+  concepts:[
+    {h:'Three approaches, one answer', p:['When financing matters, project valuation needs to account for leverage. Three methods — WACC, adjusted present value (APV), and flow-to-equity (FTE) — should, if applied consistently, give the same answer. The right one to use depends on the firm\'s leverage policy.']},
+    {h:'WACC', p:['Discount unlevered free cash flow (FCF) at r_wacc, which already embeds the interest tax shield inside the discount rate. Best when the firm maintains a fixed, constant debt-to-value (or debt-to-equity) ratio, so r_wacc stays stable over time.',
+      'FCF = EBIT(1−τ_c) + Depreciation − CapEx − ΔNWC. V_L = PV(FCF at r_wacc); NPV = V_L − Investment cost.']},
+    {h:'Adjusted Present Value (APV)', p:['V_L = V_U + PV(interest tax shield), calculated as two separate pieces. First value the project as if all-equity financed (discount FCF at r_U), then separately add the value of the tax shield.',
+      'Best when debt follows a predetermined schedule, or a target interest-coverage ratio — cases where WACC is awkward because leverage (and hence r_wacc) shifts over time. It is more complex than WACC when leverage is a constant ratio, since you may need to know debt capacity at each point in time.']},
+    {h:'Flow-to-Equity (FTE)', p:['Focuses directly on cash flows to shareholders: FCFE_t = FCF_t − D_{t-1}·r_D·(1−τ_c) + (D_t − D_{t-1}), discounted at r_E. NPV = PV(FCFE) and then V_L = NPV + Investment cost.',
+      'FTE is well-suited to a constant D/E policy, and especially useful when equity value must be found directly for a complex capital structure containing securities with unknown market values.']},
+    {h:'Discount rate for the tax shield depends on the leverage policy', p:['Constant D/V (or D/E): the tax shield is proportional to firm value/FCF risk, so discount at r_U.',
+      'Target interest coverage ratio k (interest = k × FCF): shield is proportional to FCF, so also discount at r_U — giving the clean result V_L = V_U × (1 + τ_c·k).',
+      'Predetermined (fixed dollar) debt levels: the shield is nearly as safe as the debt payments themselves, so discount at r_D. For permanent fixed debt D, PV(ITS) = τ_c·D.']},
+    {h:'Financial distress and agency costs in valuation', p:['Leverage-related distress and agency costs should be built directly into projected FCF (they typically lower expected FCF) and can raise r_U itself (systematic risk of cash flows tends to rise when distress is more likely in downturns). Note: r_U excludes the tax shield but is not immune to distress and agency costs.']}
+  ],
+  formulas:[
+    {n:'Free cash flow', e:'FCF = EBIT(1−τ_c) + Dep − CapEx − ΔNWC'},
+    {n:'WACC valuation', e:'V_L = PV(FCF at r_wacc);  NPV = V_L − Cost'},
+    {n:'APV', e:'V_L = V_U + PV(interest tax shield)'},
+    {n:'Permanent debt tax shield (APV)', e:'PV(ITS) = τ_c × D'},
+    {n:'Target interest coverage (APV)', e:'V_L = V_U × (1 + τ_c·k)'},
+    {n:'Flow-to-equity', e:'FCFE_t = FCF_t − D_{t-1}r_D(1−τ_c) + (D_t−D_{t-1})'}
+  ],
+  mcq:[
+    {q:'The WACC method for valuing a levered project is best suited to a firm that:',
+     choices:['Follows a fixed, predetermined dollar schedule of debt repayments','Maintains a constant target debt-to-value ratio','Has no debt at all','Has an unknown market value of equity'],
+     correct:1, explain:'WACC embeds the tax shield in the discount rate assuming leverage — and hence r_wacc — stays roughly constant, which holds under a constant D/V policy.'},
+    {q:'The APV method values a project by:',
+     choices:['Discounting EBIT directly at r_E','Separately valuing the unlevered project and then adding the value of financing side effects like the interest tax shield','Ignoring taxes entirely','Only valuing the equity cash flows'],
+     correct:1, explain:'APV = V_U + PV(interest tax shield) [+ other financing side effects] — an explicit, itemized approach rather than folding everything into one discount rate.'},
+    {q:'If a firm follows a policy of predetermined, fixed-dollar debt levels (not a constant D/V ratio), the associated interest tax shields should generally be discounted at:',
+     choices:['r_U, the unlevered cost of capital','r_E, the cost of equity','r_D, the cost of debt, since the debt schedule is relatively certain','The risk-free rate under all circumstances'],
+     correct:2, explain:'When the dollar amount of debt is fixed in advance, the resulting tax shields are about as safe as the debt payments themselves, so r_D is the appropriate discount rate.'},
+    {q:'The flow-to-equity (FTE) approach values a project by discounting:',
+     choices:['Free cash flow to the firm at r_wacc','Free cash flow to equity (FCFE) at r_E','EBIT at r_U','Interest payments at r_D'],
+     correct:1, explain:'FTE isolates the cash flows actually available to shareholders after debt service and net borrowing, discounted at the cost of equity.'},
+    {q:'FTE is particularly useful (compared to WACC or APV) when:',
+     choices:['The firm is entirely unlevered','Equity needs to be valued directly because other securities in a complex capital structure lack known market values','There are no taxes to consider','The project has no risk at all'],
+     correct:1, explain:'Because FTE solves for equity value directly, it avoids having to separately value every other security in the capital structure, which WACC and APV effectively require.'}
+  ],
+  generators:[
+    { name:'WACC valuation of a growing project', blurb:'Discount a growing free-cash-flow perpetuity at r_wacc.',
+      generate:function(){
+        const fcf1 = randInt(5,15);
+        const g = randFloat(0.01,0.04,3);
+        const wacc = randFloat(Math.max(0.07,g+0.03),0.12,3);
+        const cost = randInt(40,120);
+        const vl = fcf1/(wacc-g);
+        const npv = vl-cost;
+        return {
+          prompt:`A project costing <b>$${cost} million</b> today is expected to generate free cash flow of <b>$${fcf1} million</b> next year, growing at <b>${pct(g)}</b> per year forever. The firm's WACC is <b>${pct(wacc)}</b>. Using the WACC method, what is the project's NPV?`,
+          unit:'$ million', answer:npv,
+          steps:[
+            `Value the growing perpetuity of free cash flow at r_wacc: V_L = FCF₁ / (r_wacc − g) = ${fcf1} / (${fmt(wacc,3)} − ${fmt(g,3)}) = <span class="work">$${fmt(vl,2)}M</span>.`,
+            `NPV = V_L − Investment cost = ${fmt(vl,2)} − ${cost} = <span class="work">$${fmt(npv,2)}M</span>.`
+          ],
+          final:`NPV ≈ $${fmt(npv,2)} million`
+        };
+      }
+    },
+    { name:'APV with permanent debt', blurb:'Value unlevered, then add a fixed-dollar tax shield.',
+      generate:function(){
+        const fcf = randInt(5,15);
+        const rU = randFloat(0.08,0.14,3);
+        const D = randInt(20,80);
+        const tc = randFloat(0.25,0.40,2);
+        const cost = randInt(40,120);
+        const vu = fcf/rU;
+        const its = tc*D;
+        const vl = vu+its;
+        const npv = vl-cost;
+        return {
+          prompt:`A project costing <b>$${cost} million</b> generates a level, perpetual free cash flow of <b>$${fcf} million per year</b>. The unlevered cost of capital is <b>r_U = ${pct(rU)}</b>. The firm plans to fund it partly with <b>$${D} million</b> of permanent debt (τ_c = <b>${pct(tc)}</b>). Use the APV method to find the project's NPV.`,
+          unit:'$ million', answer:npv,
+          steps:[
+            `Step 1 — value as if all-equity financed: V_U = FCF / r_U = ${fcf} / ${fmt(rU,3)} = <span class="work">$${fmt(vu,2)}M</span>.`,
+            `Step 2 — value the tax shield separately. With permanent debt, PV(ITS) = τ_c × D = ${pct(tc)} × ${D} = <span class="work">$${fmt(its,2)}M</span>.`,
+            `V_L = V_U + PV(ITS) = ${fmt(vu,2)} + ${fmt(its,2)} = <span class="work">$${fmt(vl,2)}M</span>.`,
+            `NPV = V_L − Cost = ${fmt(vl,2)} − ${cost} = <span class="work">$${fmt(npv,2)}M</span>.`
+          ],
+          final:`NPV (APV) ≈ $${fmt(npv,2)} million`
+        };
+      }
+    },
+    { name:'Target interest coverage ratio', blurb:'Apply the clean V_L = V_U(1+τ_ck) result.',
+      generate:function(){
+        const vu = randFloat(30,95,2);
+        const tc = randFloat(0.25,0.40,2);
+        const k = randFloat(0.10,0.30,2);
+        const vl = vu*(1+tc*k);
+        return {
+          prompt:`A project has an unlevered value of <b>V_U = $${fmt(vu,2)} million</b>. The firm plans to keep interest payments at <b>${pct(k)}</b> of free cash flow every year (a target interest coverage policy), and faces a tax rate of <b>τ_c = ${pct(tc)}</b>. What is the levered value V_L of the project?`,
+          unit:'$ million', answer:vl,
+          steps:[
+            `Since the tax shield is proportional to FCF under this policy, it has the same risk as FCF, so it's discounted at r_U — this leads to the compact formula V_L = V_U × (1 + τ_c·k).`,
+            `V_L = ${fmt(vu,2)} × (1 + ${pct(tc)} × ${pct(k)}) = ${fmt(vu,2)} × (1 + ${fmt(tc*k,4)}) = <span class="work">$${fmt(vl,2)}M</span>.`
+          ],
+          final:`V_L ≈ $${fmt(vl,2)} million`
+        };
+      }
+    }
+  ]
+},
+{
+  id:23, roman:'XXIII', title:'Raising Equity Capital',
+  subtitle:'Private financing, IPOs, and seasoned equity offerings — Text Ch. 23',
+  concepts:[
+    {h:'Financing private firms', p:['Beyond founder capital, private firms raise equity from angel investors, venture capital (VC) firms (limited partnerships specializing in young private firms, often taking board seats), private equity firms (similar to VC but investing in existing private companies at larger scale), institutional investors, sovereign wealth funds, and strategic corporate investors.']},
+    {h:'Preferred stock for outside investors', p:['Founders typically sell preferred stock to early outside investors: it usually carries no cash dividend but has seniority over common equity in liquidation, and often an option to convert into common shares. Pre-money valuation = existing shares × new issue price; post-money valuation = (existing + new shares) × new issue price.']},
+    {h:'Initial Public Offerings (IPOs)', p:['Going public increases liquidity and access to larger pools of capital, but brings costs: wider ownership makes monitoring management harder (agency costs), and there is costly regulatory compliance (e.g., with the OSC or SEC).',
+      'In a primary offering, new shares raise fresh capital for the firm; in a secondary offering, existing shares are sold by current holders.']},
+    {h:'Underwriting types', p:['Smaller IPOs are often sold on a best-efforts basis (no guarantee of success). Larger IPOs typically use firm commitment underwriting, where the underwriter buys the whole issue at a discount and resells it, bearing the risk of an unsold or underpriced issue. Auction IPOs let investors submit bids; all winning bidders pay the same market-clearing price.']},
+    {h:'The IPO process', p:['A preliminary prospectus ("red herring") is filed with regulators; a "road show" gauges investor demand ("book building"); the final offer price and prospectus follow. Post-IPO, pre-existing shareholders are typically subject to a lockup period (often 180 days) before they can sell.']},
+    {h:'Managing underwriting risk: the greenshoe', p:['An over-allotment allocation ("greenshoe option") lets underwriters sell up to 15% more shares than planned, effectively selling short; if the price rises, they exercise the option to cover; if it falls, they buy back shares in the market at the lower price to cover and stabilize the price.']},
+    {h:'IPO underpricing', p:['IPOs are, on average, priced below the price at which the market subsequently trades them (about 6% underpricing in Canada, 18% in the U.S., varying by country and era). Possible explanations: underwriters minimize the risk of a withdrawn issue and legal liability, influential investors extract discounts, and the "winner\'s curse" among less-informed bidders.']},
+    {h:'Seasoned Equity Offerings (SEOs)', p:['A publicly traded firm sells additional new shares. A cash offer sells to any investor; a rights offer first offers new shares to existing shareholders (common in the U.K., rarer in North America), protecting them from dilution at an unfavorable price.',
+      'On average, announcing an SEO causes the stock price to fall roughly 3% — consistent with adverse selection concerns (why would a well-informed manager sell equity if it weren\'t at least fully, or over-, valued?).']},
+    {h:'Flotation costs', p:['Direct costs (underwriting spread, legal/accounting/filing fees) are disclosed in the prospectus; indirect costs (management time, underpricing, the SEO announcement price drop) are not, but are real economic costs of raising equity.']}
+  ],
+  formulas:[
+    {n:'Pre-money valuation', e:'Pre-money = Existing shares × New issue price'},
+    {n:'Post-money valuation', e:'Post-money = (Existing + New shares) × New issue price'},
+    {n:'Rights needed per new share', e:'N (existing) / New shares to be issued'},
+    {n:'Value of a right', e:'(P_cum − P_subscription) / (Rights per share + 1)'},
+    {n:'Ex-rights price', e:'(N·P + Amount raised) / (N + New shares)'}
+  ],
+  mcq:[
+    {q:'Venture capital (VC) firms typically:',
+     choices:['Invest primarily in mature, publicly traded companies','Are limited partnerships that raise funds to invest in young private firms, often taking board seats','Only make loans, never take equity positions','Are prohibited from investing in the same industry twice'],
+     correct:1, explain:'VC firms are run by general partners (venture capitalists) on behalf of limited partners, focusing on young private companies and often becoming actively involved via board seats.'},
+    {q:'The "pre-money valuation" of a firm in a new financing round equals:',
+     choices:['(Existing + new shares) × new issue price','Existing shares × new issue price','New shares × new issue price only','Total assets minus total liabilities'],
+     correct:1, explain:'Pre-money values the firm\'s existing ownership at the price being paid by new investors; add the new capital raised (new shares × price) to get post-money valuation.'},
+    {q:'In a firm-commitment underwritten IPO, the underwriter:',
+     choices:['Simply tries to sell shares with no guarantee of success','Guarantees the sale of the entire issue by buying it from the firm at a discount and reselling it','Only sells to institutional investors','Is not compensated for the offering'],
+     correct:1, explain:'Firm commitment underwriting shifts the risk of an unsold or underpriced issue onto the underwriter, who buys the whole offering upfront at a discount to the public offer price.'},
+    {q:'"IPO underpricing" refers to the well-documented tendency for:',
+     choices:['IPO shares to be priced above their true value','An IPO\'s first-day closing price to often end up notably above the offer price','SEOs to be underpriced more than IPOs','Underwriters to lose money on almost every IPO'],
+     correct:1, explain:'On average, IPO shares jump in price on the first trading day, meaning the offer price was set below where the market was willing to trade the stock.'},
+    {q:'On average, when a publicly traded firm announces a seasoned equity offering (SEO), its stock price tends to:',
+     choices:['Rise, reflecting new investment opportunities','Fall by roughly 3%, often attributed to adverse selection','Stay essentially unchanged','Rise sharply due to the extra capital raised'],
+     correct:1, explain:'Investors often interpret a new equity sale as a signal that managers believe the stock is fully or over-valued, which is consistent with the observed price decline.'},
+    {q:'A rights offering primarily gives existing shareholders:',
+     choices:['An obligation to buy new shares at a premium price','The option to buy new shares at a set subscription price, protecting their proportional ownership','A guaranteed cash dividend','Extra voting rights only'],
+     correct:1, explain:'Rights offers let existing shareholders maintain their percentage ownership by buying new shares at the subscription price (or selling the rights to someone who will).'}
+  ],
+  generators:[
+    { name:'Pre-money & post-money valuation', blurb:'Value a private firm around a new financing round.',
+      generate:function(){
+        const existing = randFloat(5,20,2);
+        const price = randFloat(0.5,5,2);
+        const newSh = randFloat(1,5,2);
+        const preMoney = existing*price;
+        const postMoney = (existing+newSh)*price;
+        return {
+          prompt:`A private firm has <b>${fmt(existing,2)} million</b> shares outstanding. In a new financing round, it sells <b>${fmt(newSh,2)} million</b> new shares to investors at <b>$${fmt(price,2)}</b> per share. What is the firm's pre-money valuation?`,
+          unit:'$ million', answer:preMoney,
+          steps:[
+            `Pre-money valuation = existing shares × new issue price = ${fmt(existing,2)}M × ${fmt(price,2)} = <span class="work">$${fmt(preMoney,2)}M</span>.`,
+            `(For reference, post-money valuation = (existing + new shares) × price = ${fmt(existing+newSh,2)}M × ${fmt(price,2)} = $${fmt(postMoney,2)}M — the difference is exactly the ${fmt(newSh*price,2)}M raised in the round.)`
+          ],
+          final:`Pre-money valuation = $${fmt(preMoney,2)} million`
+        };
+      }
+    },
+    { name:'Rights offering: value of a right', blurb:'Work through a seasoned equity rights issue.',
+      generate:function(){
+        const N = randFloat(5,20,1);
+        const P = randFloat(10,30,2);
+        const M = randFloat(20,100,1);
+        const Ps = randFloat(P*0.5,P*0.85,2);
+        const newShares = M/Ps;
+        const rightsPerShare = N/newShares;
+        const rightValue = (P-Ps)/(rightsPerShare+1);
+        const exRightsPrice = (N*P+M)/(N+newShares);
+        return {
+          prompt:`A firm has <b>${fmt(N,1)} million</b> shares outstanding, currently trading at <b>$${fmt(P,2)}</b>. It wants to raise <b>$${fmt(M,1)} million</b> through a rights offering with a subscription price of <b>$${fmt(Ps,2)}</b> per share. Assuming ${fmt(rightsPerShare,2)} rights are required to buy one new share, what is the approximate value of a single right?`,
+          unit:'$ per right', answer:rightValue,
+          steps:[
+            `New shares to be issued = Amount to raise / Subscription price = ${fmt(M,1)}M / ${fmt(Ps,2)} = <span class="work">${fmt(newShares,3)}M shares</span>.`,
+            `Rights needed per new share = existing shares / new shares = ${fmt(N,1)} / ${fmt(newShares,3)} = <span class="work">${fmt(rightsPerShare,3)}</span>.`,
+            `Value of a right ≈ (P_cum − P_subscription) / (rights per share + 1) = (${fmt(P,2)} − ${fmt(Ps,2)}) / (${fmt(rightsPerShare,3)} + 1) = <span class="work">$${fmt(rightValue,4)}</span>.`
+          ],
+          final:`Value of a right ≈ $${fmt(rightValue,3)} (ex-rights price ≈ $${fmt(exRightsPrice,2)})`
+        };
+      }
+    }
+  ]
+}
+];
+
+/* =========================================================
+   STATE
+   ========================================================= */
+const state = {
+  view:'home',        // 'home' | 'chapter'
+  chapterId:null,
+  tab:'concepts',      // 'concepts' | 'practice' | 'quiz'
+  activeGenIdx:null,
+  currentProblem:null,
+  quiz:{pool:[],idx:0,score:0,answered:false},
+};
+
+function getChapter(id){ return CHAPTERS.find(c=>c.id===id); }
+
+/* =========================================================
+   RENDER: SIDEBAR
+   ========================================================= */
+function renderSidebar(){
+  const el = document.getElementById('sidebar');
+  let html = `
+    <div class="brand">
+      <div class="mark">AFM 274 · Corporate Finance</div>
+      <h1>Ledger</h1>
+      <p>A study studio for capital structure, payout &amp; valuation</p>
+    </div>
+    <div class="nav-item ${state.view==='home'?'active':''}" onclick="goHome()">
+      <div class="chip">◆</div>
+      <div class="lbl">Overview<small>Course map</small></div>
+    </div>
+    <div class="nav-group-label">Chapters</div>
+  `;
+  CHAPTERS.forEach(c=>{
+    const active = state.view==='chapter' && state.chapterId===c.id;
+    html += `
+      <div class="nav-item ${active?'active':''}" onclick="openChapter(${c.id})">
+        <div class="chip">${c.id}</div>
+        <div class="lbl">${shortTitle(c.title)}<small>${c.subtitle.split('—')[0].trim()}</small></div>
+      </div>
+    `;
+  });
+  html += `
+    <div class="side-foot">Built from your AFM 274 course decks (Ch. 17–21, 23) and the Midterm 2 review. Practice numbers are randomized — hit "New numbers" for endless reps.</div>
+  `;
+  el.innerHTML = html;
+}
+function shortTitle(t){
+  return t.length>26 ? t.slice(0,24)+'…' : t;
+}
+
+/* =========================================================
+   RENDER: HOME
+   ========================================================= */
+function renderHome(){
+  const main = document.getElementById('main');
+  let cards = CHAPTERS.map(c=>`
+    <div class="home-card" onclick="openChapter(${c.id})">
+      <div class="chip">${c.id}</div>
+      <h4>${c.title}</h4>
+      <p>${c.subtitle}</p>
+    </div>
+  `).join('');
+  main.innerHTML = `
+    <div class="home-hero">
+      <div class="eyebrow">Study Studio</div>
+      <h2>Learn it, then prove it.</h2>
+      <p>Each chapter pairs a tight set of concept notes and formulas with practice problems built from your course's own examples — regenerated with new numbers every time, plus concept quizzes for the qualitative material. Pick a chapter to start, or jump into a mixed review pulling from everything.</p>
+      <div class="mix-btn" onclick="startMixedPractice()">⟲ Mixed practice — pull a random problem from any chapter</div>
+    </div>
+    <div class="home-grid">${cards}</div>
+  `;
+}
+
+/* =========================================================
+   RENDER: CHAPTER
+   ========================================================= */
+function openChapter(id){
+  state.view='chapter';
+  state.chapterId=id;
+  state.tab='concepts';
+  state.activeGenIdx=null;
+  state.currentProblem=null;
+  render();
+}
+function goHome(){
+  state.view='home';
+  render();
+}
+function setTab(tab){
+  state.tab=tab;
+  state.activeGenIdx=null;
+  state.currentProblem=null;
+  if(tab==='quiz') startQuiz(state.chapterId);
+  render();
+}
+
+function renderChapter(){
+  const main = document.getElementById('main');
+  const c = getChapter(state.chapterId);
+  main.innerHTML = `
+    <div class="crumbs">Chapter ${c.roman} · Text Ch. ${c.id}</div>
+    <div class="page-head">
+      <h2>${c.title}</h2>
+      <p class="dek">${c.subtitle}</p>
+    </div>
+    <div class="tabbar">
+      <button class="tabbtn ${state.tab==='concepts'?'active':''}" onclick="setTab('concepts')">Concepts &amp; Formulas</button>
+      <button class="tabbtn ${state.tab==='practice'?'active':''}" onclick="setTab('practice')">Practice Problems</button>
+      <button class="tabbtn ${state.tab==='quiz'?'active':''}" onclick="setTab('quiz')">Concept Quiz</button>
+    </div>
+    <div id="tabcontent"></div>
+  `;
+  renderTabContent();
+}
+
+function renderTabContent(){
+  const c = getChapter(state.chapterId);
+  const wrap = document.getElementById('tabcontent');
+  if(state.tab==='concepts'){
+    let conceptsHtml = c.concepts.map(cc=>`
+      <div class="card concept-card">
+        <h3>${cc.h}</h3>
+        ${cc.p.map(p=>`<p>${p}</p>`).join('')}
+      </div>
+    `).join('');
+    let formulaRows = c.formulas.map(f=>`
+      <div class="formula-row"><div class="fname">${f.n}</div><div class="fexpr">${f.e}</div></div>
+    `).join('');
+    wrap.innerHTML = `
+      ${conceptsHtml}
+      <div class="card">
+        <h3 style="font-family:var(--serif);font-size:17px;margin:0 0 4px;color:var(--ink-2);">Formula sheet</h3>
+        ${formulaRows}
+      </div>
+    `;
+  } else if(state.tab==='practice'){
+    renderPractice(c, wrap);
+  } else if(state.tab==='quiz'){
+    renderQuiz(wrap);
+  }
+}
+
+/* =========================================================
+   PRACTICE PROBLEMS
+   ========================================================= */
+function renderPractice(c, wrap){
+  if(state.activeGenIdx===null){
+    let grid = c.generators.map((g,i)=>`
+      <div class="ptype" onclick="startProblem(${i})">
+        <div class="num">PROBLEM ${String(i+1).padStart(2,'0')}</div>
+        <h4>${g.name}</h4>
+        <p>${g.blurb}</p>
+      </div>
+    `).join('');
+    wrap.innerHTML = `<div class="grid">${grid}</div>`;
+  } else {
+    renderProblemPanel(c, wrap);
+  }
+}
+function startProblem(idx){
+  state.activeGenIdx = idx;
+  const c = getChapter(state.chapterId);
+  state.currentProblem = c.generators[idx].generate();
+  render();
+}
+function newNumbers(){
+  const c = getChapter(state.chapterId);
+  state.currentProblem = c.generators[state.activeGenIdx].generate();
+  render();
+}
+function backToProblemGrid(){
+  state.activeGenIdx=null;
+  state.currentProblem=null;
+  render();
+}
+function renderProblemPanel(c, wrap){
+  const g = c.generators[state.activeGenIdx];
+  const p = state.currentProblem;
+  wrap.innerHTML = `
+    <div class="back-link" onclick="backToProblemGrid()">← All practice problems</div>
+    <div class="problem-panel">
+      <div class="kicker">${g.name}</div>
+      <div class="prompt">${p.prompt}</div>
+      <div class="answer-row">
+        <input type="text" id="answerInput" placeholder="Your answer" autocomplete="off" onkeydown="if(event.key==='Enter')checkAnswer()">
+        <span class="unit">${p.unit}</span>
+      </div>
+      <div class="btnrow">
+        <button class="btn primary" onclick="checkAnswer()">Check answer</button>
+        <button class="btn" onclick="toggleSolution()">Show step-by-step</button>
+        <button class="btn ghost" onclick="newNumbers()">↻ New numbers</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <div class="solution" id="solution">
+        <ol>${p.steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+        <div class="final">${p.final}</div>
+      </div>
+    </div>
+  `;
+}
+function toggleSolution(){
+  document.getElementById('solution').classList.toggle('open');
+}
+function checkAnswer(){
+  const input = document.getElementById('answerInput');
+  const val = parseFloat((input.value||'').replace(/[,$%]/g,''));
+  const fb = document.getElementById('feedback');
+  const p = state.currentProblem;
+  if(isNaN(val)){
+    fb.className='feedback wrong';
+    fb.style.display='block';
+    fb.innerHTML = 'Enter a number to check your answer.';
+    return;
+  }
+  const tol = Math.max(Math.abs(p.answer)*0.02, 0.015);
+  if(Math.abs(val-p.answer)<=tol){
+    fb.className='feedback correct';
+    fb.innerHTML = `✓ Correct — nicely done. (${p.final})`;
+  } else {
+    fb.className='feedback wrong';
+    fb.innerHTML = `Not quite. Try again, or click "Show step-by-step" to see exactly where the numbers come from.`;
+  }
+}
+
+/* Mixed practice: pick a random chapter + generator */
+function startMixedPractice(){
+  const c = choice(CHAPTERS);
+  state.view='chapter';
+  state.chapterId=c.id;
+  state.tab='practice';
+  state.activeGenIdx = randInt(0,c.generators.length-1);
+  state.currentProblem = c.generators[state.activeGenIdx].generate();
+  render();
+}
+
+/* =========================================================
+   CONCEPT QUIZ
+   ========================================================= */
+function startQuiz(chapterId){
+  const c = getChapter(chapterId);
+  const pool = c.mcq.map((q,i)=>({...q, _i:i})).sort(()=>Math.random()-0.5);
+  state.quiz = {pool, idx:0, score:0, answered:false};
+}
+function renderQuiz(wrap){
+  const qz = state.quiz;
+  if(qz.idx>=qz.pool.length){
+    wrap.innerHTML = `
+      <div class="problem-panel" style="text-align:center;">
+        <div class="kicker">Quiz complete</div>
+        <div class="prompt">You scored <b>${qz.score} / ${qz.pool.length}</b> on this chapter's concept quiz.</div>
+        <div class="btnrow" style="justify-content:center;">
+          <button class="btn primary" onclick="startQuiz(state.chapterId);render()">↻ Retake quiz</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+  const q = qz.pool[qz.idx];
+  wrap.innerHTML = `
+    <div class="quiz-score">Score: ${qz.score} / ${qz.idx}${qz.answered?'':''}</div>
+    <div class="problem-panel">
+      <div class="quiz-progress">Question ${qz.idx+1} of ${qz.pool.length}</div>
+      <div class="quiz-q">${q.q}</div>
+      <div id="choices">
+        ${q.choices.map((ch,i)=>`<button class="choice" id="choice-${i}" onclick="answerQuiz(${i})">${ch}</button>`).join('')}
+      </div>
+      <div class="quiz-explain" id="quizExplain">${q.explain}</div>
+      <div class="btnrow" style="margin-top:14px;">
+        <button class="btn primary" id="nextBtn" style="display:none;" onclick="nextQuiz()">Next question →</button>
+      </div>
+    </div>
+  `;
+}
+function answerQuiz(i){
+  const qz = state.quiz;
+  if(qz.answered) return;
+  qz.answered = true;
+  const q = qz.pool[qz.idx];
+  document.querySelectorAll('.choice').forEach((btn,idx)=>{
+    btn.setAttribute('disabled','true');
+    if(idx===q.correct) btn.classList.add('correct');
+    else if(idx===i) btn.classList.add('wrong');
+  });
+  if(i===q.correct) qz.score++;
+  document.getElementById('quizExplain').classList.add('open');
+  document.getElementById('nextBtn').style.display='inline-block';
+  document.querySelector('.quiz-score').textContent = `Score: ${qz.score} / ${qz.idx+1}`;
+}
+function nextQuiz(){
+  state.quiz.idx++;
+  state.quiz.answered=false;
+  renderQuiz(document.getElementById('tabcontent'));
+}
+
+/* =========================================================
+   MAIN RENDER
+   ========================================================= */
+function render(){
+  renderSidebar();
+  if(state.view==='home') renderHome();
+  else renderChapter();
+  window.scrollTo(0,0);
+}
+render();
+</script>
+</body>
+</html>
