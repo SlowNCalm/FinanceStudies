@@ -984,6 +984,211 @@ const CHAPTERS = [
   ]
 },
 {
+  id:'MT2', roman:'Tutorial', chipLabel:'★', title:'Midterm 2 Tutorial: Comprehensive Problems',
+  subtitle:'Full worked tutorial questions spanning payout policy and valuation with leverage — Ch. 20–21',
+  concepts:[
+    {h:'Ex-dividend arbitrage and tax clienteles', p:['If the actual ex-dividend price drop is smaller than an investor\'s indifference drop, that investor can profit by buying just before the stock goes ex-dividend, collecting the dividend, and selling just after — provided their personal dividend tax rate is low enough.',
+      'Solving −ΔP + Div(1−τ_d) + ΔP·τ_g > 0 for τ_d gives the highest dividend tax rate at which the trade is still profitable: τ_d < 1 − ΔP(1−τ_g)/Div. Investors with tax rates below this threshold have an incentive to trade around the dividend; this is one driver of the clientele effect.']},
+    {h:'Homemade dividends with a real timeline', p:['MM Dividend Irrelevance holds even when a firm changes its payout schedule mid-life. If a firm raises a dividend at one date by issuing new equity, the new shareholders must be promised enough at the next date to earn their required return — which reduces what\'s left for the original shareholders later. Work date-by-date: figure out how much extra cash is needed today, what return new investors demand, and what is left over for existing holders down the line.',
+      'Equivalently, any shareholder can replicate a different dividend policy on their own — by selling extra shares to raise cash early, or reinvesting an unwanted dividend — landing at the identical final wealth either way.']},
+    {h:'Reconciling WACC and FTE with a changing debt level', p:['When a firm targets a constant D/V ratio, its dollar amount of debt still changes year to year as the project\'s value changes — this is its "debt capacity." Debt capacity at time t equals (D/V) × the project\'s continuation value at time t (i.e., the value of its remaining future cash flows discounted at r_wacc). At the very end of a project\'s life, debt capacity is zero.',
+      'Flow-to-equity cash flow each year is FCFE_t = FCF_t − D_{t-1}r_D(1−τ_c) + (D_t − D_{t-1}): free cash flow, minus after-tax interest on last year\'s debt, plus this year\'s net new borrowing (which is negative when debt is being paid down). Discounting FCFE at r_E gives exactly the same NPV as discounting FCF at r_wacc — a useful check on your work.']},
+    {h:'Valuing debt directly from its promised cash flows', p:['When the market value of a firm\'s debt isn\'t quoted directly, you can compute it like any bond: discount the promised coupons and principal at the appropriate market rate. For risk-free debt, that rate is the risk-free rate. Enterprise value is then market value of equity plus this computed market value of debt, and you can back out an unknown like r_wacc = FCF/EV for a level perpetuity, or solve the WACC equation for whichever variable (often r_E) isn\'t directly observable.']},
+    {h:'Subsidized financing and APV', p:['A below-market interest rate is a second source of value alongside the ordinary interest tax shield. The value of the subsidy equals the loan\'s face value minus the present value of its actual promised payments discounted at the market rate the firm would otherwise have paid.',
+      'Full APV with a subsidized loan: NPV = NPV(unlevered) + PV(interest tax shield) + Value of the rate subsidy. It\'s often revealing to also compute what the NPV would have been with ordinary market-rate debt (tax shield only, no subsidy) — sometimes a subsidy is what turns an otherwise value-destroying project into one worth taking.']}
+  ],
+  formulas:[
+    {n:'Max profitable dividend tax rate', e:'τ_d,max = 1 − ΔP(1−τ_g)/Div'},
+    {n:'Market value of a bond (debt)', e:'MV = Coupon·[1−(1+r)⁻ⁿ]/r + Face/(1+r)ⁿ'},
+    {n:'Flow to equity', e:'FCFE_t = FCF_t − D_{t-1}r_D(1−τ_c) + (D_t − D_{t-1})'},
+    {n:'Debt capacity (target D/V)', e:'D_t = (D/V) × Continuation value_t'},
+    {n:'Value of an interest-rate subsidy', e:'Subsidy = L − PV(loan cash flows @ market rate)'},
+    {n:'APV with a subsidized loan', e:'NPV = NPV_U + PV(ITS) + Subsidy value'}
+  ],
+  mcq:[
+    {q:'If a stock\'s actual ex-dividend price drop is smaller than an investor\'s personal indifference drop (based on their tax rates), that investor can profit by:',
+     choices:['Selling the stock well before the ex-dividend date and never looking back','Buying just before the ex-dividend date, collecting the dividend, and selling just after','Never trading around dividends under any circumstances','Shorting the stock indefinitely'],
+     correct:1, explain:'A smaller-than-indifference price drop means the after-tax dividend received exceeds the after-tax capital loss from the price drop, making the "buy cum-dividend, sell ex-dividend" trade profitable for that investor\'s tax situation.'},
+    {q:'In a perfect capital market, if a firm changes its payout policy — e.g., switches from paying interest income as a dividend to paying out the full underlying principal as a one-time dividend — firm value on the announcement date will:',
+     choices:['Rise, since shareholders love bigger dividends','Fall immediately, anticipating the future cash outflow','Not change at all — only the ex-dividend date price will fall, by the amount paid out','Double, due to signaling effects'],
+     correct:2, explain:'MM Dividend Irrelevance: with no taxes or transaction costs, the announcement itself doesn\'t change firm value; value only shifts from the firm to shareholders on the actual ex-dividend/payment date, by the amount distributed.'},
+    {q:'When a firm targets a constant debt-to-value ratio over a multi-year project, its dollar debt capacity in the final year of the project is:',
+     choices:['Equal to the initial debt level','Always growing over time','Zero, since there is no remaining continuation value once the project ends','Undefined'],
+     correct:2, explain:'Debt capacity at any date equals the target ratio times the continuation (remaining) value of the project at that point; once the project pays its last cash flow, there is nothing left to lever, so debt capacity falls to zero.'},
+    {q:'The flow-to-equity (FTE) and WACC methods, applied consistently to the same project and financing policy, should produce:',
+     choices:['Systematically different NPVs, since they use different discount rates','The same NPV, since they are two ways of accounting for the same interest tax shield','The same NPV only if there is no debt at all','Different NPVs unless the corporate tax rate is zero'],
+     correct:1, explain:'WACC folds the tax shield into the discount rate; FTE nets it out of the cash flows to equity directly. Done correctly and consistently, both approaches reconcile to the same NPV.'},
+    {q:'When a firm receives a loan at a below-market ("subsidized") interest rate, the total gain to the firm from this financing (beyond an equivalent market-rate loan) should be attributed to:',
+     choices:['The interest tax shield alone','The value of the rate subsidy alone','Both the interest tax shield and the separate value of the rate subsidy','Neither — subsidized loans never add value'],
+     correct:2, explain:'A subsidized loan provides two distinct benefits: the usual tax deductibility of whatever interest is actually paid, and the extra value from paying a below-market rate in the first place. APV should account for both explicitly.'}
+  ],
+  generators:[
+    { name:'Ex-dividend date: breakeven tax rate', blurb:'Find the highest dividend tax rate at which capturing a dividend is still profitable.',
+      generate:function(){
+        const Div = randFloat(0.5,4,2);
+        const dP = randFloat(Div*0.55,Div*0.92,2);
+        const Tg = randFloat(0.15,0.28,2);
+        const TdMax = 1 - dP*(1-Tg)/Div;
+        return {
+          prompt:`A stock pays a regular dividend of <b>$${fmt(Div,2)}</b> per share, and its price typically drops by <b>$${fmt(dP,2)}</b> per share when it goes ex-dividend. The capital gains tax rate is <b>τ_g = ${pct(Tg)}</b>, and there are no transaction costs. What is the highest personal dividend tax rate τ_d at which an investor could still profit from buying the stock just before it goes ex-dividend, collecting the dividend, and selling immediately after?`,
+          unit:'%', answer:TdMax*100,
+          steps:[
+            `The after-tax cash flow from buying cum-dividend at P_cum, collecting Div, and selling ex-dividend at P_ex is: −P_cum + P_ex + Div(1−τ_d) + (P_cum−P_ex)·τ_g = −ΔP + Div(1−τ_d) + ΔP·τ_g, where ΔP = P_cum − P_ex = $${fmt(dP,2)}.`,
+            `Set this expression greater than zero and solve for τ_d: Div(1−τ_d) > ΔP(1−τ_g)  ⟹  1−τ_d > ΔP(1−τ_g)/Div  ⟹  τ_d < 1 − ΔP(1−τ_g)/Div.`,
+            `τ_d < 1 − [${fmt(dP,2)} × (1−${fmt(Tg,2)})] / ${fmt(Div,2)} = 1 − [${fmt(dP,2)} × ${fmt(1-Tg,2)}]/${fmt(Div,2)} = 1 − ${fmt(dP*(1-Tg)/Div,4)} = <span class="work">${pct(TdMax,2)}</span>.`
+          ],
+          final:`τ_d,max ≈ ${pct(TdMax,2)} — investors taxed below this rate can profit from the trade`
+        };
+      }
+    },
+    { name:'Homemade dividends: financing a policy change', blurb:'A liquidating firm changes its dividend schedule to satisfy one shareholder\'s timing preference.',
+      generate:function(){
+        const N0 = randInt(15,30)*100000;
+        const E1 = randInt(15,30)*1000000;
+        const Capex1 = randInt(4,Math.floor(E1/1000000*0.5))*1000000;
+        const E2 = randInt(18,34)*1000000;
+        const r = randFloat(0.15,0.25,2);
+        const f = randFloat(0.15,0.35,2);
+        const div1BaseTotal = E1-Capex1;
+        const div1PerShare = div1BaseTotal/N0;
+        const investorShares = Math.round(f*N0);
+        const baseIncome1 = div1PerShare*investorShares;
+        const extraDesired = randInt(3,18)*100000;
+        const desired1 = baseIncome1+extraDesired;
+        const dPerShare = extraDesired/investorShares;
+        const extraCash = dPerShare*N0;
+        const x = (E2-extraCash*(1+r))/N0;
+        const P1 = x/(1+r);
+        const newShares = extraCash/P1;
+        return {
+          prompt:`A firm has <b>${fmt(N0,0)}</b> shares outstanding. It is all-equity, will be liquidated in 2 years, and its policy is to pay out all surplus cash as dividends. Earnings will be <b>$${fmt(E1,0)}</b> at the end of year 1 (after a planned <b>$${fmt(Capex1,0)}</b> investment outlay that year) and <b>$${fmt(E2,0)}</b> at the end of year 2 (liquidation). The required return is <b>${pct(r)}</b>. You own <b>${pct(f)}</b> of the firm and want to receive <b>$${fmt(desired1,0)}</b> in total at the end of year 1 — more than your share of the current policy provides. The firm agrees to raise its year-1 dividend for <i>all</i> shareholders and finance the difference by issuing new shares at the fair ex-dividend price. How many new shares must the firm issue?`,
+          unit:'shares', answer:newShares,
+          steps:[
+            `Current (base) policy: year-1 dividend = E₁ − CapEx₁ = ${fmt(E1,0)} − ${fmt(Capex1,0)} = <span class="work">$${fmt(div1BaseTotal,0)}</span>, or $${fmt(div1PerShare,2)} per share. Your ${pct(f)} stake is ${fmt(investorShares,0)} shares, so your base year-1 income = $${fmt(div1PerShare,2)} × ${fmt(investorShares,0)} = <span class="work">$${fmt(baseIncome1,0)}</span>.`,
+            `You want an extra $${fmt(extraDesired,0)} (to reach $${fmt(desired1,0)}). Since any dividend increase applies per-share to everyone, the extra dividend per share needed is $${fmt(extraDesired,0)} / ${fmt(investorShares,0)} = <span class="work">$${fmt(dPerShare,2)}</span>, so total new cash to raise = $${fmt(dPerShare,2)} × ${fmt(N0,0)} = <span class="work">$${fmt(extraCash,0)}</span>.`,
+            `New shareholders need to earn ${pct(r)}, so they must receive $${fmt(extraCash,0)} × (1+${r}) = <span class="work">$${fmt(extraCash*(1+r),0)}</span> at year 2. The rest of E₂ funds the year-2 dividend per share for everyone still holding: per-share year-2 dividend = [E₂ − ${fmt(extraCash*(1+r),0)}] / N₀ = [${fmt(E2,0)} − ${fmt(extraCash*(1+r),0)}] / ${fmt(N0,0)} = <span class="work">$${fmt(x,3)}</span>.`,
+            `The ex-dividend share price right after the year-1 dividend (but before the new issue) is the PV of that year-2 dividend: P₁ = $${fmt(x,3)} / (1+${r}) = <span class="work">$${fmt(P1,3)}</span>.`,
+            `New shares issued = Cash needed / P₁ = ${fmt(extraCash,0)} / ${fmt(P1,3)} = <span class="work">${fmt(newShares,0)} shares</span>.`
+          ],
+          final:`New shares to issue ≈ ${fmt(newShares,0)}`
+        };
+      }
+    },
+    { name:'Reconciling WACC and FTE over a multi-year project', blurb:'Track a shrinking debt schedule and confirm both methods agree.',
+      generate:function(){
+        const MVeq = randFloat(6,14,1)*1e9;
+        const D = MVeq*randFloat(0.25,0.5,2);
+        const EV = MVeq+D;
+        const rE = randFloat(0.08,0.13,3);
+        const rD = randFloat(0.04,0.08,3);
+        const tc = randFloat(0.25,0.40,2);
+        const FCF0 = -randInt(70,140);
+        const FCF1 = randInt(35,70);
+        const FCF2 = randInt(70,130);
+        const FCF3 = randInt(50,100);
+        const f = D/EV;
+        const rwacc = (MVeq/EV)*rE + f*rD*(1-tc);
+        const pv1=FCF1/(1+rwacc), pv2=FCF2/Math.pow(1+rwacc,2), pv3=FCF3/Math.pow(1+rwacc,3);
+        const V0 = pv1+pv2+pv3;
+        const npvWacc = V0+FCF0;
+        const D0 = f*V0;
+        const CV2 = FCF3/(1+rwacc);
+        const D2 = f*CV2;
+        const CV1 = FCF2/(1+rwacc)+FCF3/Math.pow(1+rwacc,2);
+        const D1 = f*CV1;
+        const D3 = 0;
+        const FCFE0 = FCF0 + D0;
+        const FCFE1 = FCF1 - D0*rD*(1-tc) + (D1-D0);
+        const FCFE2 = FCF2 - D1*rD*(1-tc) + (D2-D1);
+        const FCFE3 = FCF3 - D2*rD*(1-tc) + (D3-D2);
+        const npvFTE = FCFE0 + FCFE1/(1+rE) + FCFE2/Math.pow(1+rE,2) + FCFE3/Math.pow(1+rE,3);
+        return {
+          prompt:`A firm has an equity cost of capital of <b>${pct(rE)}</b>, market capitalization of <b>$${fmt(MVeq/1e9,2)}B</b>, and enterprise value of <b>$${fmt(EV/1e9,2)}B</b>. Its debt cost of capital is <b>${pct(rD)}</b> and its marginal tax rate is <b>${pct(tc)}</b>. It maintains a constant debt-to-value ratio. A new 3-year project has free cash flows (in $ millions) of <b>${FCF0}</b> today, then <b>${FCF1}</b>, <b>${FCF2}</b>, and <b>${FCF3}</b> in years 1–3. What is this project's NPV, computed using the flow-to-equity (FTE) method? (It should match the WACC method.)`,
+          unit:'$ million', answer:npvFTE,
+          steps:[
+            `Debt/value ratio: D/EV = (${fmt(EV/1e9,2)} − ${fmt(MVeq/1e9,2)}) / ${fmt(EV/1e9,2)} = <span class="work">${pct(f)}</span>. WACC = (E/V)r_E + (D/V)r_D(1−τ_c) = <span class="work">${pct(rwacc)}</span>.`,
+            `WACC method: V₀ = ${FCF1}/(1+${fmt(rwacc,4)}) + ${FCF2}/(1+${fmt(rwacc,4)})² + ${FCF3}/(1+${fmt(rwacc,4)})³ = <span class="work">$${fmt(V0,2)}M</span>; NPV = V₀ + FCF₀ = ${fmt(V0,2)} + (${FCF0}) = <span class="work">$${fmt(npvWacc,2)}M</span>.`,
+            `Debt capacity (D/V × continuation value each year): D₀ = ${pct(f)}×${fmt(V0,2)} = <span class="work">$${fmt(D0,2)}M</span>; D₁ = ${pct(f)}×${fmt(CV1,2)} = <span class="work">$${fmt(D1,2)}M</span>; D₂ = ${pct(f)}×${fmt(CV2,2)} = <span class="work">$${fmt(D2,2)}M</span>; D₃ = 0 (project ends).`,
+            `FCFE₀ = FCF₀ + D₀ = ${FCF0} + ${fmt(D0,2)} = <span class="work">$${fmt(FCFE0,2)}M</span>.`,
+            `FCFE₁ = FCF₁ − D₀r_D(1−τ_c) + (D₁−D₀) = ${FCF1} − ${fmt(D0*rD*(1-tc),2)} + (${fmt(D1-D0,2)}) = <span class="work">$${fmt(FCFE1,2)}M</span>.`,
+            `FCFE₂ = FCF₂ − D₁r_D(1−τ_c) + (D₂−D₁) = ${FCF2} − ${fmt(D1*rD*(1-tc),2)} + (${fmt(D2-D1,2)}) = <span class="work">$${fmt(FCFE2,2)}M</span>.`,
+            `FCFE₃ = FCF₃ − D₂r_D(1−τ_c) + (D₃−D₂) = ${FCF3} − ${fmt(D2*rD*(1-tc),2)} + (${fmt(D3-D2,2)}) = <span class="work">$${fmt(FCFE3,2)}M</span>.`,
+            `Discount FCFE at r_E: NPV = ${fmt(FCFE0,2)} + ${fmt(FCFE1,2)}/(1+${rE}) + ${fmt(FCFE2,2)}/(1+${rE})² + ${fmt(FCFE3,2)}/(1+${rE})³ = <span class="work">$${fmt(npvFTE,2)}M</span> — matching the WACC-method NPV of $${fmt(npvWacc,2)}M above (small gaps are just rounding).`
+          ],
+          final:`NPV (FTE) ≈ $${fmt(npvFTE,2)} million`
+        };
+      }
+    },
+    { name:'Comprehensive: value debt, then back out r_E', blurb:'Compute WACC from EV and FCF, then solve the WACC equation for the unknown r_E.',
+      generate:function(){
+        const N = randInt(6,14)*1000000;
+        const P0 = randFloat(20,55,2);
+        const couponRate = randFloat(0.06,0.11,3);
+        const Face = randInt(60,140)*1000000;
+        const n = randInt(3,6);
+        const rf = randFloat(0.04,0.07,3);
+        const EBIT = randInt(70,160)*1000000;
+        const tc = randFloat(0.25,0.40,2);
+        const depCapex = randInt(8,25)*1000000;
+        const MVeq = N*P0;
+        const coupon = couponRate*Face;
+        const annuityFactor = (1-Math.pow(1+rf,-n))/rf;
+        const MVdebt = coupon*annuityFactor + Face/Math.pow(1+rf,n);
+        const EV = MVeq+MVdebt;
+        const FCF = EBIT*(1-tc); // dep - capex cancels, dNWC = 0
+        const rwacc = FCF/EV;
+        const DVratio = MVdebt/EV, EVratio = MVeq/EV;
+        const rE = (rwacc - DVratio*rf*(1-tc)) / EVratio;
+        return {
+          prompt:`A firm has <b>${fmt(N,0)}</b> shares outstanding trading at <b>$${fmt(P0,2)}</b> per share. It also has long-term, risk-free debt: <b>${n} years</b> to maturity, annual coupons at a rate of <b>${pct(couponRate)}</b>, and a face value of <b>$${fmt(Face,0)}</b> (first coupon due in exactly one year). The risk-free rate for all maturities is <b>${pct(rf)}</b>. EBIT of <b>$${fmt(EBIT,0)}</b> is expected to continue forever; capital expenditures are expected to equal depreciation each year at <b>$${fmt(depCapex,0)}</b>, and net working capital is not expected to change. The corporate tax rate is <b>${pct(tc)}</b>, and the firm plans to maintain its current debt-to-value ratio forever. What is the firm's cost of equity, r_E?`,
+          unit:'%', answer:rE*100,
+          steps:[
+            `Market value of equity = N × P₀ = ${fmt(N,0)} × ${fmt(P0,2)} = <span class="work">$${fmt(MVeq,0)}</span>.`,
+            `Value the debt like a bond: annual coupon = ${pct(couponRate)} × ${fmt(Face,0)} = $${fmt(coupon,0)}. MV(debt) = Coupon×[1−(1+r_f)⁻ⁿ]/r_f + Face/(1+r_f)ⁿ = ${fmt(coupon,0)}×${fmt(annuityFactor,4)} + ${fmt(Face,0)}/(1+${rf})^${n} = <span class="work">$${fmt(MVdebt,0)}</span>.`,
+            `Enterprise value = MV(equity) + MV(debt) = ${fmt(MVeq,0)} + ${fmt(MVdebt,0)} = <span class="work">$${fmt(EV,0)}</span>.`,
+            `Free cash flow = EBIT(1−τ_c) + Dep − CapEx − ΔNWC = ${fmt(EBIT,0)}×${fmt(1-tc,2)} + 0 − 0 = <span class="work">$${fmt(FCF,0)}</span> (depreciation and CapEx are equal, so they cancel).`,
+            `Since FCF is a level perpetuity equal to EV, r_wacc = FCF / EV = ${fmt(FCF,0)} / ${fmt(EV,0)} = <span class="work">${pct(rwacc,4)}</span>.`,
+            `Now solve the WACC identity for r_E: r_wacc = (E/V)r_E + (D/V)r_D(1−τ_c), with D/V = ${fmt(DVratio,4)} and E/V = ${fmt(EVratio,4)}. r_E = [r_wacc − (D/V)r_D(1−τ_c)] / (E/V) = [${fmt(rwacc,4)} − ${fmt(DVratio*rf*(1-tc),4)}] / ${fmt(EVratio,4)} = <span class="work">${pct(rE,4)}</span>.`
+          ],
+          final:`r_E ≈ ${pct(rE,2)}`
+        };
+      }
+    },
+    { name:'Subsidized loan: full APV', blurb:'Split the value of below-market financing into a tax shield and a rate subsidy.',
+      generate:function(){
+        const L = randInt(5,15)*1000000;
+        const rs = randFloat(0.02,0.06,3);
+        const rm = randFloat(0.09,0.15,3);
+        const n = randInt(3,6);
+        const tc = randFloat(0.25,0.40,2);
+        const rU = randFloat(0.13,0.20,3);
+        const FCF = randInt(3,8)*1000000;
+        const Cost = randInt(10,20)*1000000;
+        const annuity = (r,nn)=> (1-Math.pow(1+r,-nn))/r;
+        const pvU = FCF*annuity(rU,n);
+        const npvU = pvU-Cost;
+        const pvLoanMarket = L/Math.pow(1+rm,n) + rs*L*(1-tc)*annuity(rm,n);
+        const subsidy = L-pvLoanMarket;
+        const npvWithSub = npvU+subsidy;
+        const pvits = L*tc*(1-Math.pow(1+rm,-n));
+        const npvNoSub = npvU+pvits;
+        return {
+          prompt:`A government agency offers to lend a firm <b>$${fmt(L,0)}</b> for <b>${n} years</b> at a fixed annual rate of <b>${pct(rs)}</b> (interest paid annually, principal repaid at maturity). The market rate on a comparable loan would be <b>${pct(rm)}</b>. The loan will fund a project costing <b>$${fmt(Cost,0)}</b> that generates free cash flow of <b>$${fmt(FCF,0)}</b> per year for ${n} years. The corporate tax rate is <b>${pct(tc)}</b>, and the firm's unlevered cost of capital is <b>${pct(rU)}</b>. What is the project's NPV, accounting for the subsidized loan?`,
+          unit:'$', answer:npvWithSub,
+          steps:[
+            `Unlevered NPV first: PV = ${fmt(FCF,0)} × [1−(1+${rU})⁻${n}]/${rU} = <span class="work">$${fmt(pvU,0)}</span>; NPV_U = ${fmt(pvU,0)} − ${fmt(Cost,0)} = <span class="work">$${fmt(npvU,0)}</span>.`,
+            `Value the loan's actual promised payments (interest at ${pct(rs)}, after-tax, plus principal) at the market rate ${pct(rm)}: PV = ${fmt(L,0)}/(1+${rm})^${n} + ${fmt(rs,3)}×${fmt(L,0)}×(1−${tc})×[1−(1+${rm})⁻${n}]/${rm} = <span class="work">$${fmt(pvLoanMarket,0)}</span>.`,
+            `Value of the subsidy = Face value − PV(actual payments at market rate) = ${fmt(L,0)} − ${fmt(pvLoanMarket,0)} = <span class="work">$${fmt(subsidy,0)}</span>. This captures the benefit of paying below-market interest.`,
+            `Total project NPV = NPV_U + Subsidy value = ${fmt(npvU,0)} + ${fmt(subsidy,0)} = <span class="work">$${fmt(npvWithSub,0)}</span>.`,
+            `(For comparison, with an ordinary market-rate loan there\'d be no subsidy — only the usual interest tax shield, PV(ITS) = ${fmt(L,0)}×${pct(tc)}×[1−(1+${rm})⁻${n}] = $${fmt(pvits,0)}, giving NPV = ${fmt(npvU,0)} + ${fmt(pvits,0)} = $${fmt(npvNoSub,0)}${npvNoSub<0?' — in that case the firm would not take the project at all.':' .'})`
+          ],
+          final:`NPV with the subsidized loan ≈ $${fmt(npvWithSub,0)}`
+        };
+      }
+    }
+  ]
+},
+{
   id:23, roman:'XXIII', title:'Raising Equity Capital',
   subtitle:'Private financing, IPOs, and seasoned equity offerings — Text Ch. 23',
   concepts:[
@@ -1083,7 +1288,7 @@ const state = {
   quiz:{pool:[],idx:0,score:0,answered:false},
 };
 
-function getChapter(id){ return CHAPTERS.find(c=>c.id===id); }
+function getChapter(id){ return CHAPTERS.find(c=>c.id==id); }
 
 /* =========================================================
    RENDER: SIDEBAR
@@ -1103,10 +1308,10 @@ function renderSidebar(){
     <div class="nav-group-label">Chapters</div>
   `;
   CHAPTERS.forEach(c=>{
-    const active = state.view==='chapter' && state.chapterId===c.id;
+    const active = state.view==='chapter' && state.chapterId==c.id;
     html += `
-      <div class="nav-item ${active?'active':''}" onclick="openChapter(${c.id})">
-        <div class="chip">${c.id}</div>
+      <div class="nav-item ${active?'active':''}" onclick="openChapter('${c.id}')">
+        <div class="chip">${c.chipLabel||c.id}</div>
         <div class="lbl">${shortTitle(c.title)}<small>${c.subtitle.split('—')[0].trim()}</small></div>
       </div>
     `;
@@ -1126,7 +1331,7 @@ function shortTitle(t){
 function renderHome(){
   const main = document.getElementById('main');
   let cards = CHAPTERS.map(c=>`
-    <div class="home-card" onclick="openChapter(${c.id})">
+    <div class="home-card" onclick="openChapter('${c.id}')">
       <div class="chip">${c.id}</div>
       <h4>${c.title}</h4>
       <p>${c.subtitle}</p>
